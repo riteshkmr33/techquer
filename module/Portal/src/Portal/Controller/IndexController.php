@@ -10,7 +10,6 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        echo 'portal'; exit;
         return new ViewModel();
     }
 

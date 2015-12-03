@@ -1,0 +1,79 @@
+
+.col-md-push-3{
+  left: 23.6%;
+
+}
+@media(max-width:767px) {
+  .slider-content a.slider-title {
+    font-size: 10px;
+    padding: 5px;
+  }
+  #comments .comment_detail {
+  	width: 210px;
+  }
+  #comments ol ul .comment_detail {
+  	width: 135px;
+  }
+  #respond p.comment-form-author, #respond p.comment-form-email, #contactForm .name, #contactForm .email {
+  	width: 100%;
+  }
+  .left-sidebar.col-md-3, .right-sidebar.col-md-3 {
+    width: 100%;
+  }
+  .col-md-push-3{
+  left: 0px;
+
+  }
+  .left-sidebar{
+    padding: 0;
+
+  }
+  .right-sidebar{
+    padding: 0;
+  }
+  .survey div{
+    padding: 5px 15px;
+  }
+  .survey .col-md-6:first-child {
+padding-right: 15px;
+}
+.survey .col-md-6:last-child {
+padding-left: 15px;
+}
+}
+@media(min-width:768px) {
+  .left-sidebar.col-md-3, .right-sidebar.col-md-3 {
+    width: 100%;
+  }
+  .main-nav-bar .navbar-nav li a {
+    padding: 3px;
+    font-size: 10px;
+    margin-left: 2px;
+  }
+  .survey .col-md-6:first-child {
+padding-right: 15px;
+}
+.survey .col-md-6:last-child {
+padding-left: 15px;
+}
+}
+@media(max-width:992px) {
+  .col-md-push-3{
+  left: 0px;
+
+  }
+  }
+
+@media(min-width:992px) {
+  .left-sidebar.col-md-3, .right-sidebar.col-md-3 {
+    width: 23.6%;
+  }
+  .main-nav-bar .navbar-nav li a {
+    padding: 5px 8px;
+    margin-left: 10px;
+    font-size: 12px;
+  }
+}
+@media(min-width:1200px) {
+
+}

@@ -1,0 +1,123 @@
+body {
+	background: #e6e6e6;
+	color: #6f6f6f;
+}
+a {
+	color: #6f6f6f;
+}
+a:hover {
+	color: #ee0077;
+}
+.top-nav-bar, .socialize ul li a {
+	background: #f9f9f9;
+}
+.top-nav-bar .navbar-nav li a {
+	color: #6f6f6f;
+}
+.top-nav-bar .navbar-nav li a:hover {
+	color: #ee0077;
+}
+.bg-pink {
+	background: #fff;
+}
+.logo h1 a, .logo h1 a:hover {
+	color: #25afe5;
+}
+.widget {
+	background: #fff;
+}
+.main-nav-bar {
+	background-color: #1f1f1f;
+}
+.main-nav-bar .navbar-nav li a {
+	border:1px solid #1f1f1f;
+}
+.main-nav-bar .navbar-nav>.current-menu-item>a, .main-nav-bar .navbar-nav>.current-menu-item>a:hover, .main-nav-bar .navbar-nav>.current-menu-item>a:focus, .main-nav-bar .navbar-nav li a:hover, .navbar-default .navbar-nav>.open>a, .navbar-default .navbar-nav>.open>a:hover, .navbar-default .navbar-nav>.open>a:focus {
+	background-color: #ee0077;
+	border:1px solid #ee0077;
+}
+h1, h2, h3, h4, h5, h6, .socialize h4, .widget .widget-title, .recent-widget ul.post-list li h4 a:hover {
+	color: #25afe5;
+}
+.socialize ul li a {
+	border:1px solid #e9e9e9;
+}
+.recent-widget .nav-tabs.nav-justified li.active a {
+	color: #25afe5;
+}
+.recent-widget ul.post-list li h4 a {
+	color: #898989;
+}
+.recent-widget ul.post-list li {
+	border-top: 1px solid #e7e7e7;
+}
+.recent-widget ul.post-list li .thumb .recent-count, .news-carousel .comment-count, .reviews span.comment-count, .tvshows .comment-count {
+	background-color: #25afe5;
+}
+.twitter-feeds li {
+	background: url("../img/twitter-feeds.png") no-repeat 0 18px;
+}
+.twitter-feeds li a, .twitter_follow_button {
+	color: #898989;
+}
+.ticker-time, .slider-content span.slider-time {
+	background: #25afe5;
+}
+.slider-content a.slider-title {
+	background: rgba(0, 0, 0, 0.95);
+}
+.slider-content span.slider-featured {
+	background-color: #fff;
+	color: #202020;
+}
+.bx-controls a:hover {
+	background-color: #ee0077;
+}
+.reviews .ratings li span.rating-before.last {
+	background: #ee0077;
+}
+.reviews .ratings li span.rating-before.last span.rating-score {
+	background: #ca0969;
+}
+.reviews h4.rating-title a, .post-single h4.list-title a, .post-single h4.list-title a:hover {
+	color: #1f1f1f;
+}
+.post-single li {
+	border-top:1px solid #e9e9e9;
+}
+.widget-survey .form-group:first-child .checkbox {
+	border-top: 1px solid #e9e9e9;
+}
+.widget-survey .checkbox {
+	padding-bottom: 10px;
+	border-bottom: 1px solid #e9e9e9;
+}
+.tagcloud a {
+	background: #e4e4e4;
+}
+.tagcloud a:hover, .survey .button.vote, .subscribe .input-button, .featured-side span.featured-side-title {
+	background: #ee0077;
+}
+.footer {
+	background: #202020;
+}
+.footer .footer-top, .footer .footer-bottom {
+	color: #898989;
+	border-bottom: 1px solid #313131;
+}
+.footer a.footer-nav-scroll {
+	background: #ee0077 url("../img/scroll.png") no-repeat center;
+}
+.footer a.footer-nav-scroll:hover {
+	background: #ca0969 url("../img/scroll.png") no-repeat center;
+}
+.footer #menu-footer-menu li a {
+	color: #FFF;
+}
+.featured-side img {
+	border: 1px solid #0e0e0e;
+}
+.featured-side p.featured-side-desc {
+	background-color: rgba(37, 175, 229, 0.95);
+	color: #FFF;
+}
