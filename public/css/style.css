@@ -29,7 +29,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 /*  0.  CSS Reset & Clearfix - http://meyerweb.com/eric/tools/css/reset/
 /*-----------------------------------------------------------------------------------*/
 
-html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; } body { line-height: 1; } ol, ul { list-style: none; } blockquote, q { quotes: none; } blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; } :focus { outline: 0; } ins { text-decoration: none; } del { text-decoration: line-through; } table { border-collapse: collapse; border-spacing: 0; }
+html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, font, ../img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; } body { line-height: 1; } ol, ul { list-style: none; } blockquote, q { quotes: none; } blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; } :focus { outline: 0; } ins { text-decoration: none; } del { text-decoration: line-through; } table { border-collapse: collapse; border-spacing: 0; }
 
 .clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden; } .clearfix { display: inline-block; } /* Hide from IE Mac \*/ .clearfix { display: block; } /* End hide from IE Mac */ .none { display: none; } /* End Clearfix */
 
@@ -56,7 +56,7 @@ a:hover {
   -o-transition: color 0.1s linear;
   color:#32487b;
 }
-a img { border: none; }
+a ../img { border: none; }
 p,
 pre,
 dl,
@@ -128,7 +128,7 @@ span.center {
   background-color:transparent;
   padding:0;
 }
-.slider img{
+.slider ../img{
     width: 100%;
 }
 .slider .info {
@@ -326,7 +326,7 @@ span.center {
 .recent-widget ul.post-list li .thumb a {
   position: relative;
 }
-.recent-widget ul.post-list li .thumb a img {
+.recent-widget ul.post-list li .thumb a ../img {
   max-width: 60px;
   height: auto;
 }
@@ -421,7 +421,7 @@ span.center {
   padding: 0px;
 }
 .twitter-feeds li {
-  background: url("img/twitter-feeds.png") no-repeat  0 18px;
+  background: url("../img/twitter-feeds.png") no-repeat  0 18px;
   display: block;
   line-height: 19px;
   padding: 20px 0 0 44px;
@@ -465,7 +465,7 @@ span.center {
   margin: 0px;
 }
 .search input {
-  background: url("img/glass.png") no-repeat right center #FFFFFF;
+  background: url("../img/glass.png") no-repeat right center #FFFFFF;
   border: medium none;
   font-size: 12px;
   width: 100%;
@@ -484,7 +484,7 @@ span.center {
   position: relative;
   font-size: 12px;
 }
-.tvshows a img {
+.tvshows a ../img {
   min-height: 128px;
   max-width: 100%;
 }
@@ -501,7 +501,7 @@ span.center {
   background-color: transparent;
   padding: 0;
 }
-.featured-side img{
+.featured-side ../img{
     width: 100%;
     border:1px solid #FFF;
 }
@@ -606,7 +606,7 @@ span.center {
   background-color: #D03187;
   color: #FFF;
 }
-.img-beresponsive {
+.../img-beresponsive {
   width: 100%;
 }
 .news_ticker {
@@ -656,7 +656,7 @@ span.center {
 }
 .bx-controls a {
   background-color: #D7D7D7;
-  background-image: url("img/nav-icons.png");
+  background-image: url("../img/nav-icons.png");
   background-repeat: no-repeat;
   display: inline-block;
   height: 14px;
@@ -689,7 +689,7 @@ ul.reviews > li {
   float: left;
   width: 49%;
 }
-.reviews .thumb img {
+.reviews .thumb ../img {
   width: 100%;
   max-height: 127px;
 }
@@ -800,7 +800,7 @@ ul.reviews > li {
   margin-top: 22px;
   padding-top: 22px;
 }
-.post-single a img {
+.post-single a ../img {
   float: left;
   margin-bottom: 10px;
   margin-right: 15px;
@@ -831,7 +831,7 @@ ul.reviews > li {
   width: 33%;
   text-align: center;
 }
-.flickr_badge_image img {
+.flickr_badge_image ../img {
   height: 66px;
   width: 66px;
 }
@@ -849,7 +849,7 @@ ul.reviews > li {
   float: left;
   max-height: 60px;
 }
-.ads120-60.ads-one a img {
+.ads120-60.ads-one a ../img {
   max-width: 100%;
 }
   
@@ -866,7 +866,7 @@ ul.reviews > li {
 .review-percentage .review-item span{background:#F2F2F2;display:block;height:15px;}
 .review-percentage .review-item span span{
   background-color: #78511a;
-  background-image:url(img/stripes.png);
+  background-image:url(../img/stripes.png);
   display:block;
   height:15px;
 }
@@ -895,13 +895,13 @@ ul.reviews > li {
 span.stars-large{
   width:98px;
   display:inline-block;
-  background:url(img/stars-large.png) no-repeat left bottom;
+  background:url(../img/stars-large.png) no-repeat left bottom;
   height:22px;
 }
 span.stars-large span{
   width:100%;
   display:block;
-  background:url(img/stars-large.png) no-repeat left top;
+  background:url(../img/stars-large.png) no-repeat left top;
   height:22px;
   float:left;
   cursor: pointer;
@@ -909,14 +909,14 @@ span.stars-large span{
 span.stars-small{
   width:52px;
   display:block;
-  background:url(img/stars-small.png) no-repeat left bottom;
+  background:url(../img/stars-small.png) no-repeat left bottom;
   height:15px;
 }
 span.stars-small span{
   float: left;
   width:100%;
   display:block;
-  background:url(img/stars-small.png) no-repeat left top;
+  background:url(../img/stars-small.png) no-repeat left top;
   height:15px;
 }
 .user-rate {float: right;width: 100%; text-align: center;}
@@ -924,7 +924,7 @@ span.stars-small span{
 /* Post */
 .post-thumbnail .stars-large, .post-thumbnail .stars-small{ position:absolute; bottom:5px; right:6px; }
 .tie-rate-load{
-  background:url(img/ajax-loader.gif) no-repeat center;
+  background:url(../img/ajax-loader.gif) no-repeat center;
   width: 98px;
   height: 22px;
   display: block;
@@ -958,7 +958,7 @@ span.stars-small span{
     font-size: 13px;
 }
 blockquote {
-  background: url("img/quote.png") no-repeat left center;
+  background: url("../img/quote.png") no-repeat left center;
   color: #A6A6A6;
   font-size: 12px;
   font-style: italic;
@@ -1020,7 +1020,7 @@ blockquote {
 .category-posts li a {
   position: relative;
 }
-.category-posts li a img {
+.category-posts li a ../img {
   max-width: 100%;
 }
 .category-posts li p {
@@ -1075,11 +1075,11 @@ a.author_rss:hover {
 .author_links a:first-child {
   border-left: 1px solid #E9E9E9 !important;
 }
-.author-bar img{
+.author-bar ../img{
     float: left;
     margin-right: 15px;
 }
-#comments .comment-vcard,#comments .comment-vcard img  {
+#comments .comment-vcard,#comments .comment-vcard ../img  {
     float: left;
     height: 60px;
     width: 60px;
@@ -1094,7 +1094,7 @@ span.author-tag {
     width: 100%;
 }
 #comments ol ul {
-    background: url("img/ver_dash.png") repeat-y;
+    background: url("../img/ver_dash.png") repeat-y;
     float: left;
     margin: 15px 0 0 30px;
     padding: 15px 0 0 45px;
@@ -1104,7 +1104,7 @@ span.author-tag {
     display: none;
 }
 #comments ol ul .line {
-    background: url("img/hor_dash.png") repeat-x 0 bottom;
+    background: url("../img/hor_dash.png") repeat-x 0 bottom;
     display: block;
     height: 50px;
     margin: -15px 0 0 -50px;
@@ -1333,7 +1333,7 @@ em.moderation {
 .news-carousel li {
   overflow: hidden;
 }
-.news-carousel li a img {
+.news-carousel li a ../img {
   max-width: 100%;
 }
 /* 404 */
@@ -1470,7 +1470,7 @@ em.moderation {
   font-size: 12px;
   margin-bottom: 15px;
 }
-.team-member img {
+.team-member ../img {
   width: 100%;
   margin-bottom: 15px;
 }
@@ -1507,7 +1507,7 @@ em.moderation {
   padding:0;
 }
 .breadcrumbs > ul > li {
-  background: url("img/arrow.png") no-repeat right center;
+  background: url("../img/arrow.png") no-repeat right center;
   float: left;
   padding: 18px 35px 17px 20px;
 }
@@ -1721,7 +1721,7 @@ ul.fa-ul li .fa {
     color: #cff;
 }
 .footer a.footer-nav-scroll {
-  background:#D03187 url("img/scroll.png") no-repeat center;
+  background:#D03187 url("../img/scroll.png") no-repeat center;
   padding: 18px;
   cursor: pointer;
 }
