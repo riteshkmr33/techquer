@@ -1,4 +1,6 @@
-<?php ini_set('display_errors',1);
+<?php
+
+ini_set('display_errors', 1);
 /**
  * Zend Framework (http://framework.zend.com/)
  *
@@ -6,45 +8,45 @@
  * @copyright Copyright (c) 2005-2014 Zend Technologies USA Inc. (http://www.zend.com)
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
-
 return array(
     'router' => array(
         'routes' => array(
             'portal' => array(
                 'type' => 'Zend\Mvc\Router\Http\Literal',
                 'options' => array(
-                    'route'    => '/portal',
-                    'defaults' => array(
-                        'controller' => 'Portal\Controller\Index',
-                        'action'     => 'index',
-                    ),
-                ),
-            ),
-            // The following is a route to simplify getting started creating
-            // new controllers and actions without needing to create a new
-            // module. Simply drop new controllers in, and you can access them
-            // using the path /application/:controller/:action
-            'application' => array(
-                'type'    => 'Literal',
-                'options' => array(
-                    'route'    => '/portal',
+                    'route' => '/portal',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Portal\Controller',
-                        'controller'    => 'Index',
-                        'action'        => 'index',
+                        'controller' => 'Portal\Controller\Index',
+                        'action' => 'index',
                     ),
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
                     'default' => array(
-                        'type'    => 'Segment',
+                        'type' => 'Segment',
                         'options' => array(
-                            'route'    => '/[:controller[/:action]]',
+                            'route' => '/[:controller[/:action]]',
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'action'     => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
+                            ),
+                        ),
+                    ),
+                    /* Auth route */
+                    'auth' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/auth[/:action][/]',
+                            'constraints' => array(
+                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Auth',
+                                'action' => 'index',
                             ),
                         ),
                     ),
@@ -65,15 +67,16 @@ return array(
         'locale' => 'en_US',
         'translation_file_patterns' => array(
             array(
-                'type'     => 'gettext',
+                'type' => 'gettext',
                 'base_dir' => __DIR__ . '/../language',
-                'pattern'  => '%s.mo',
+                'pattern' => '%s.mo',
             ),
         ),
     ),
     'controllers' => array(
         'invokables' => array(
-            'Portal\Controller\Index' => 'Portal\Controller\IndexController'
+            'Portal\Controller\Index' => 'Portal\Controller\IndexController',
+            'Portal\Controller\Auth' => 'Portal\Controller\AuthController'
         ),
     ),
     'view_manager' => array(
