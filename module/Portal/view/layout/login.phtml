@@ -15,7 +15,6 @@
         <!-- styles -->
         <?php
         echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'images/portal/favicon_1.ico', 'href' => $this->basePath() . '/images/portal/favicon.ico'))
-                ->appendStylesheet($this->basePath('plugins/morris/morris.css'))
                 ->appendStylesheet($this->basePath('css/portal/bootstrap.min.css'))
                 ->appendStylesheet($this->basePath('css/portal/core.css'))
                 ->appendStylesheet($this->basePath('css/portal/components.css'))
@@ -34,9 +33,15 @@
         <?php
         echo $this->headScript()
                 ->appendFile($this->basePath('js/portal/jquery.min.js'))
-                ->appendFile($this->basePath('js/portal/modernizr.min.js'));
+                ->appendFile($this->basePath('js/portal/modernizr.min.js'))
+                ->appendFile($this->basePath('js/portal/common.js'));
         ?>
-
+        
+        <script>
+            var resizefunc = [];
+            var basePath = '<?php echo $this->basePath('portal/');?>';
+        </script>
+        
     </head>
     <body>
 
@@ -49,11 +54,26 @@
 
         <?php echo $this->content; ?>
 
-        <script>
-            var resizefunc = [];
-        </script>
-
         <!-- jQuery  -->
+        <script>
+            function authenticate(data) {
+                if (data.status == 1) {
+                    $('.alert-success').html(data.message).fadeIn('sloq').delay(3000).fadeOut('slow',function(){
+                        document.location.href = basePath;
+                    });
+                } else {
+                    $('.alert-danger').html(data.message).fadeIn('slow');
+                }
+                
+                $('.animationload').fadeOut('slow');
+            }
+            
+            $(document.body).on('submit', 'form#loginForm', function() {
+                send(basePath+"auth/authenticate/",{username: $('input#username').val(),password: $('input#password').val(),loginKey: $('input#loginKey').val()},beforeSend, authenticate);
+                return false;
+            })
+            
+        </script>
         <script src="<?php echo $this->basePath('js/portal/jquery.min.js'); ?>"></script>
         <script src="<?php echo $this->basePath('js/portal/bootstrap.min.js'); ?>"></script>
         <script src="<?php echo $this->basePath('js/portal/detect.js'); ?>"></script>

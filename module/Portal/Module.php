@@ -85,7 +85,7 @@ class Module {
                 },
                 'AuthService' => function($sm) {
                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
-                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'admins', 'userName', 'password', 'MD5(?)');
+                    $dbTableAuthAdapter = new DbTableAuthAdapter($dbAdapter, 'admins', 'userName', 'password', 'SHA1(?)');
 
                     $authService = new AuthenticationService();
                     $authService->setAdapter($dbTableAuthAdapter);

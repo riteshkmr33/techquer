@@ -1,26 +1,33 @@
+<?php $form->prepare(); ?>
 <div class="wrapper-page">
     <div class=" card-box">
         <div class="panel-heading"> 
-            <h3 class="text-center"> Sign In to <strong class="text-custom">Techquer</strong> </h3>
+            <h3 class="text-center"> Sign In to <strong class="text-custom">TechQuer</strong> </h3>
         </div> 
-
-
+        <div class="alert alert-success" style="display:none;"></div>
+        <div class="alert alert-danger" style="display:none;"></div>
         <div class="panel-body">
-            <form class="form-horizontal m-t-20" action="index.html">
+            <?php echo $this->form()->openTag($form); ?>
 
                 <div class="form-group ">
                     <div class="col-xs-12">
-                        <input class="form-control" type="text" required="" placeholder="Username">
+                        <?php $field = $form->get('username'); echo $this->formInput($field); ?>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <div class="col-xs-12">
-                        <input class="form-control" type="password" required="" placeholder="Password">
+                        <?php $field = $form->get('password'); echo $this->formInput($field); ?>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="col-xs-12">
+                        <?php $field = $form->get('loginKey'); echo $this->formInput($field); ?>
                     </div>
                 </div>
 
-                <div class="form-group ">
+                <!--<div class="form-group ">
                     <div class="col-xs-12">
                         <div class="checkbox checkbox-primary">
                             <input id="checkbox-signup" type="checkbox">
@@ -30,7 +37,7 @@
                         </div>
 
                     </div>
-                </div>
+                </div>-->
 
                 <div class="form-group text-center m-t-40">
                     <div class="col-xs-12">
@@ -38,11 +45,11 @@
                     </div>
                 </div>
 
-                <div class="form-group m-t-30 m-b-0">
+                <!--<div class="form-group m-t-30 m-b-0">
                     <div class="col-sm-12">
                         <a href="<?php echo $this->url('portal/auth',array('action' => 'forgot'))?>" class="text-dark"><i class="fa fa-lock m-r-5"></i> Forgot your password?</a>
                     </div>
-                </div>
+                </div>-->
             </form> 
 
         </div>   

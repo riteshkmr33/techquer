@@ -34,10 +34,13 @@
         <?php
         echo $this->headScript()
                 ->appendFile($this->basePath('js/portal/jquery.min.js'))
-                ->appendFile($this->basePath('js/portal/modernizr.min.js'));
+                ->appendFile($this->basePath('js/portal/modernizr.min.js'))
+                ->appendFile($this->basePath('js/portal/common.js'));
         ?>
-
-
+        <script>
+            var resizefunc = [];
+            var basePath = '<?php echo $this->basePath('portal/');?>';
+        </script>
     </head>
 
 
@@ -56,7 +59,7 @@
                 <!-- LOGO -->
                 <div class="topbar-left">
                     <div class="text-center">
-                        <a href="index.html" class="logo"><i class="icon-magnet icon-c-logo"></i><span>Ub<i class="md md-album"></i>ld</span></a>
+                        <a href="<?php echo $this->url('portal')?>" class="logo"><i class="icon-magnet icon-c-logo"></i><span>TechQuer</span></a>
                     </div>
                 </div>
 
@@ -194,7 +197,7 @@
                                         <li><a href="javascript:void(0)"><i class="ti-user m-r-5"></i> Profile</a></li>
                                         <li><a href="javascript:void(0)"><i class="ti-settings m-r-5"></i> Settings</a></li>
                                         <li><a href="javascript:void(0)"><i class="ti-lock m-r-5"></i> Lock screen</a></li>
-                                        <li><a href="javascript:void(0)"><i class="ti-power-off m-r-5"></i> Logout</a></li>
+                                        <li><a href="<?php echo $this->url('portal/auth', array('action'=>'logout'));?>"><i class="ti-power-off m-r-5"></i> Logout</a></li>
                                     </ul>
                                 </li>
                             </ul>
@@ -540,13 +543,6 @@
 
         </div>
         <!-- END wrapper -->
-
-
-
-        <script>
-            var resizefunc = [];
-        </script>
-
         <!-- jQuery  -->
         <script src="<?php echo $this->basePath('js/portal/jquery.min.js'); ?>"></script>
         <script src="<?php echo $this->basePath('js/portal/bootstrap.min.js'); ?>"></script>
