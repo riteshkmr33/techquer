@@ -9,6 +9,8 @@ use Zend\Authentication\AuthenticationService;
 use Zend\Authentication\Adapter\DbTable as DbTableAuthAdapter;
 use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
+use Portal\Model\Admins;
+use Portal\Model\AdminsTable;
 
 class Module {
 
@@ -57,7 +59,7 @@ class Module {
             /* Login check starts here */
             if (stristr($e->getRouteMatch()->getParam("__NAMESPACE__"), 'Portal') != false && !$controller instanceof Controller\Authcontroller) {
                 if (!$e->getApplication()->getServiceManager()->get('AuthService')->hasIdentity()) {
-                    return $e->getTarget()->plugin('redirect')->toRoute('portal/auth',array('action'=>'login'));
+                    return $e->getTarget()->plugin('redirect')->toRoute('portal/auth', array('action' => 'login'));
                 }
             }
             /* Login check ends here */
@@ -92,7 +94,20 @@ class Module {
                     $authService->setStorage($sm->get('Portal\Model\AuthStorage'));
 
                     return $authService;
-                }
+                },
+                /* Admins table starts */
+                'Portal\Model\AdminsTable' => function($sm) {
+                    $tableGateway = $sm->get('AdminsTableGateway');
+                    $table = new AdminsTable($tableGateway);
+                    return $table;
+                },
+                'AdminsTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Admins());
+                    return new TableGateway('admins', $dbAdapter, null, $resultSetPrototype);
+                },
+            /* Admins table ends */
             )
         );
     }

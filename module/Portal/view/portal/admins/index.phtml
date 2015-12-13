@@ -1,0 +1,149 @@
+
+<div class="content">
+    <div class="container">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!--<h4 class="page-title">Admins</h4>-->
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="<?php echo $this->url('portal') ?>">Dashboard</a>
+                    </li>
+                    <li class="active">
+                        Admins
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!--Custom Toolbar-->
+        <!--===================================================-->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title"><b>Admins</b></h4>
+                    <p class="text-muted font-13">
+                        Backend users
+                    </p>
+                    <?php if (isset($successMsgs) && count($successMsgs) > 0): ?>
+                        <div class="alert alert-success alert-dismissible">
+                            <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
+                            <?php
+                            foreach ($successMsgs as $msg) {
+                                echo $msg . ' <br/>';
+                            }
+                            ?>
+                        </div>
+                        <?php endif; ?>
+                        <?php if (isset($errors) && count($errors) > 0): ?>
+                        <div class="alert alert-danger alert-dismissible">
+                            <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
+                            <?php
+                            foreach ($errors as $msg) {
+                                echo $msg . ' <br/>';
+                            }
+                            ?>
+                        </div>
+                    <?php endif; ?>
+                    <div class="bootstrap-table">
+                        <div class="fixed-table-toolbar">
+                            <div class="bars pull-left">
+                                <button id="demo-delete-row" class="btn btn-danger delete" disabled="" data-href="<?php echo $this->url('portal/admins',array('action'=>'delete'))?>">
+                                    <i class="fa fa-trash-o m-r-5"></i>
+                                    Delete
+                                </button>
+                                <button id="demo-delete-row" class="btn btn-danger status" disabled="" data-val="3" data-href="<?php echo $this->url('portal/admins',array('action'=>'status'))?>">
+                                    <i class="fa fa-times m-r-5"></i>
+                                    Suspend
+                                </button>
+                                <button id="demo-delete-row" class="btn btn-success status" disabled="" data-val="1" data-href="<?php echo $this->url('portal/admins',array('action'=>'status'))?>">
+                                    <i class="fa fa-check m-r-5"></i>
+                                    Active
+                                </button>
+                                <a id="demo-btn-addrow" class="btn btn-default" href="<?php echo $this->url('portal/admins', array('action' => 'add')); ?>">
+                                    <i class="fa fa-plus m-r-5"></i>
+                                    Add New User
+                                </a>
+                            </div>
+                            <!--<div class="columns columns-right btn-group pull-right">
+                                <button class="btn btn-default" title="Refresh" name="refresh" type="button">
+                                    <i class="glyphicon glyphicon-refresh icon-refresh"></i>
+                                </button>
+                                <button class="btn btn-default" title="Toggle" name="toggle" type="button">
+                                    <i class="glyphicon glyphicon-list-alt icon-list-alt"></i>
+                                </button>
+
+                            </div>-->
+                            <div class="pull-right search">
+                                <input class="form-control" type="text" placeholder="Search">
+                            </div>
+                        </div>
+                        <div class="fixed-table-container" style="padding-bottom: 0px;">
+                            <div class="fixed-table-body">
+                                <table class="table-bordered ">
+                                    <thead>
+                                        <tr>
+                                            <th ><input type="checkbox" class="check-all" style="margin-left: 30px !important" /></th>
+                                            <th >Name</th>
+                                            <th >Username</th>
+                                            <th >Email</th>
+                                            <th >Role</th>
+                                            <th >Created On</th>
+                                            <th >Created By</th>
+                                            <th >Status</th>
+                                            <th >Actions</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <?php if (isset($admins) && count($admins) > 0): ?>
+                                            <?php foreach ($admins as $admin): ?>
+                                                <tr>
+                                                    <td>#<?php echo isset($admin->adminId) ? $admin->adminId : ''; ?> <input type="checkbox" class="check-it" value="<?php echo isset($admin->adminId) ? $admin->adminId : ''; ?>" /></td>
+                                                    <td><?php echo isset($admin->displayName) ? $admin->displayName : 'NA'; ?></td>
+                                                    <td><?php echo isset($admin->userName) ? $admin->userName : 'NA'; ?></td>
+                                                    <td><?php echo isset($admin->email) ? $admin->email : 'NA'; ?></td>
+                                                    <td><?php echo isset($admin->role) ? $admin->role : 'NA'; ?></td>
+                                                    <td><?php echo isset($admin->createdDate) ? date('D d, M Y', strtotime($admin->createdDate)) : ''; ?></td>
+                                                    <td><?php echo isset($admin->creator) ? $admin->creator : ''; ?></td>
+                                                    <td><?php echo isset($admin->label) ? $admin->label : ''; ?></td>
+                                                    <td class="actions">
+                                                        <button class="on-default edit-row" onclick="document.location.href = '<?php echo $this->url('portal/admins',array('action'=>'edit','id'=>$admin->adminId))?>'">
+                                                            <i class="fa fa-pencil"></i>
+                                                        </button>
+                                                        <button class="delete" data-href="<?php echo $this->url('portal/admins',array('action'=>'delete','id'=>$admin->adminId))?>">
+                                                            <i class="fa fa-trash-o"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php else: ?>
+                                            <tr>
+                                                <td colspan="9">No records found..!!</td>
+                                            </tr>
+                                        <?php endif; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <?php
+                            echo $this->paginationControl(
+                                    $admins, // the paginator object
+                                    'sliding', // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
+                                    array('partial/portalPagination.phtml', 'Portal'), // the partial to use to render the control
+                                    array('route' => 'portal/admins')  //'routeParams' => $this->postedData  the route to link to when a user clicks a control link
+                            );
+                            ?>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+
+
+    </div> <!-- container -->
+
+</div> <!-- content -->
+

@@ -16,6 +16,7 @@ class AuthController extends AbstractActionController {
     protected $form;
     protected $storage;
     protected $authservice;
+    protected $adminsTable;
 
     public function getAuthService() {
         if (!$this->authservice) {
@@ -39,6 +40,14 @@ class AuthController extends AbstractActionController {
         }
 
         return $this->form;
+    }
+    
+    private function getAdminsTable() {
+        if (!$this->adminsTable) {
+            $this->adminsTable = $this->getServiceLocator()->get('Portal\Model\AdminsTable');
+        }
+
+        return $this->adminsTable;
     }
 
     public function loginAction() {
@@ -64,7 +73,20 @@ class AuthController extends AbstractActionController {
             $result = $this->getAuthService()->authenticate();
 
             if ($result->isValid()) {
-                echo json_encode(array('status' => 1, 'message' => 'Logged in successfully. Redirecting..!!'));
+                $admin = $this->getAdminsTable()->getAdmin($request->getPost('username'));
+                
+                switch ($admin->status) {
+                    case 1:
+                        echo json_encode(array('status' => 1, 'message' => 'Logged in successfully. Redirecting..!!'));
+                        break;
+                    case 3:
+                        echo json_encode(array('status' => 0, 'message' => 'Your account has been suspended..!!'));
+                        break;
+                    case 4:
+                        echo json_encode(array('status' => 0, 'message' => 'Invalid username/password combination..!!'));
+                        break;
+                }
+                
             } else {
                 echo json_encode(array('status' => 0, 'message' => 'Invalid username/password combination..!!'));
             }

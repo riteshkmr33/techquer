@@ -1,0 +1,130 @@
+<?php $form->prepare(); ?>
+<div class="content">
+    <div class="container">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!--<h4 class="page-title">Admins</h4>-->
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="<?php echo $this->url('portal') ?>">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->url('portal/admins') ?>">Admins</a>
+                    </li>
+                    <li class="active">
+                        Add User
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!--Custom Toolbar-->
+        <!--===================================================-->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title"><b>Add User</b></h4>
+                    <p class="text-muted m-b-30 font-13">Add Admin Users</p>
+                    
+                    <div class="row">
+                        <?php echo $this->form()->openTag($form); ?>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('displayName') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('userName') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('password') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('salt')->setValue($salt) ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('email') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('roleId') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formselect($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('status') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formselect($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary waves-effect waves-light" type="submit"> Submit </button>
+                                <a class="btn btn-default waves-effect waves-light" href="<?php echo $this->url('portal/admins'); ?>"> Cancel </a>
+                            </div>
+                        </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

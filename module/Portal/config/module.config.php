@@ -35,13 +35,27 @@ return array(
                             ),
                         ),
                     ),
+                    /* Admins route */
+                    'admins' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/admins[/:action][/:id][/]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Admins',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                     /* Auth route */
                     'auth' => array(
                         'type' => 'Segment',
                         'options' => array(
                             'route' => '/auth[/:action][/]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
@@ -76,10 +90,16 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Portal\Controller\Index' => 'Portal\Controller\IndexController',
-            'Portal\Controller\Auth' => 'Portal\Controller\AuthController'
+            'Portal\Controller\Auth' => 'Portal\Controller\AuthController',
+            'Portal\Controller\Admins' => 'Portal\Controller\AdminsController'
         ),
     ),
     'view_manager' => array(
+        'template_map' => array(
+            'portal/header' => __DIR__ . '/../view/partial/portalHeader.phtml',
+            'portal/pagination' => __DIR__ . '/../view/partial/portalPagination.phtml',
+            'sidebar' => __DIR__ . '/../view/partial/sidebar.phtml',
+        ),
         'template_path_stack' => array(
             'Portal' => __DIR__ . '/../view',
         ),

@@ -1,0 +1,60 @@
+<div class="fixed-table-pagination">
+    <!--<div class="pull-left pagination-detail">
+        <span class="pagination-info">Showing 1 to 1 of 3 rows</span>
+        <span class="page-list">
+            <span class="btn-group dropup">
+                <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+                    <span class="page-size">1</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li class="active">
+                        <a href="javascript:void(0)">1</a>
+                    </li>
+                    <li>
+                        <a href="javascript:void(0)">10</a>
+                    </li>
+                </ul>
+            </span>
+            records per page
+        </span>
+    </div>-->
+    <?php if ($this->pageCount): ?>
+        <div class="pull-right pagination">
+            <ul class="pagination">
+                <!-- First page link -->
+                <?php if (isset($this->first) && $this->pageCount != "1" && isset($this->previous)): ?>
+                    <li class="page-first"> <a href="<?php echo $this->url($this->route); ?>?page=<?php echo (count($this->routeParams) > 0) ? $this->first . '&' . http_build_query($this->routeParams) : $this->first; ?>"> First </a> </li>
+                <?php else: ?>
+                    <li class="page-first disabled"> <a href="javascript:void(0)"> First </a> </li>
+                <?php endif; ?>
+                <!-- Previous page link -->
+                <?php if (isset($this->previous)): ?>
+                    <li class="page-pre"> <a href="<?php echo $this->url($this->route); ?>?page=<?php echo (count($this->routeParams) > 0) ? $this->previous . '&' . http_build_query($this->routeParams) : $this->previous; ?>"> << </a> </li>
+                <?php else: ?>
+                    <li class="page-pre disabled"> <a href="javascript:void(0)"> << </a> </li>
+                <?php endif; ?>
+                <!-- Numbered page links -->
+                <?php foreach ($this->pagesInRange as $page): ?>
+                    <?php if ($page != $this->current): ?>
+                        <li class="page-number"> <a href="<?php echo $this->url($this->route); ?>?page=<?php echo (count($this->routeParams) > 0) ? $page . '&' . http_build_query($this->routeParams) : $page;?>"> <?php echo $page; ?> </a> </li>
+                        <?php else: ?>
+                        <li class="page-number active"> <a href="javascript:void(0)"><?php echo $page; ?></a> </li>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+                <!-- Next page link -->
+                <?php if (isset($this->next)): ?>
+                    <li class="page-next"> <a href="<?php echo $this->url($this->route); ?>?page=<?php echo (count($this->routeParams) > 0) ? $this->next . '&' . http_build_query($this->routeParams) : $this->next;?>"> >> </a> </li
+                    <?php else: ?>
+                    <li class="page-next disabled"> <a href="javascript:void(0)"> >> </a> </li>
+                <?php endif; ?>
+                <!-- Last page link -->
+                <?php if (isset($this->last) && $this->pageCount != "1" && isset($this->next)): ?>
+                    <li class="page-last"> <a href="<?php echo $this->url($this->route); ?>?page=<?php echo (count($this->routeParams) > 0) ? $this->last . '&' . http_build_query($this->routeParams) : $this->last; ?>"> Last </a> </li>
+                <?php else: ?>
+                    <li class="page-last disabled"> <a href="javascript:void(0)"> Last </a> </li>
+                    <?php endif; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
+</div>
