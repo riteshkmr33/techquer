@@ -11,13 +11,25 @@
                 <li class="has_sub">
                     <a href="<?php echo $this->url('portal');?>" class="waves-effect <?php echo (isset($this->controller) && $this->controller == '\Index')?'active':'';?>"><i class="ti-home"></i> <span> Dashboard </span> </a>
                 </li>
-
+                <?php if (count(array_diff(array(2,3,4),array_keys($this->permissions))) < 3):?>
+                <li class="has_sub">
+                    <a href="#" class="waves-effect <?php echo (isset($this->controller) && in_array($this->controller,array('\Articles','\Categories','\Tags')))?'active':'';?>"><i class="fa fa-file-text"></i><!--<span class="label label-primary pull-right">6</span>--><span> Articles </span> </a>
+                    <ul class="list-unstyled">
+                        <?php if (in_array(3,array_keys($this->permissions))):?><li class="<?php echo (isset($this->controller) && $this->controller == '\Categories')?'active':'';?>"><a href="<?php echo $this->url('portal/categories')?>" >Categories</a></li><?php endif;?>
+                        <?php if (in_array(2,array_keys($this->permissions))):?><li class="<?php echo (isset($this->controller) && $this->controller == '\Tags')?'active':'';?>"><a href="<?php echo $this->url('portal/tags')?>" >Tags</a></li><?php endif;?>
+                        <?php if (in_array(4,array_keys($this->permissions))):?><li class="<?php echo (isset($this->controller) && $this->controller == '\Articles')?'active':'';?>"><a href="<?php echo $this->url('portal/articles')?>" >Articles</a></li><?php endif;?>
+                    </ul>
+                </li>
+                <?php endif;?>
+                <?php if (count(array_diff(array(1,5),array_keys($this->permissions))) < 3):?>
                 <li class="has_sub">
                     <a href="#" class="waves-effect <?php echo (isset($this->controller) && in_array($this->controller,array('\Admins')))?'active':'';?>"><i class="fa fa-group"></i><!--<span class="label label-primary pull-right">6</span>--><span> Users </span> </a>
                     <ul class="list-unstyled">
-                        <li class="<?php echo (isset($this->controller) && $this->controller == '\Admins')?'active':'';?>"><a href="<?php echo $this->url('portal/admins')?>" >Admins</a></li>
+                        <?php if (in_array(1,array_keys($this->permissions))):?><li class="<?php echo (isset($this->controller) && $this->controller == '\Admins')?'active':'';?>"><a href="<?php echo $this->url('portal/admins')?>" >Admins</a></li><?php endif;?>
+                        <?php if (in_array(5,array_keys($this->permissions))):?><li class="<?php echo (isset($this->controller) && $this->controller == '\Roles')?'active':'';?>"><a href="<?php echo $this->url('portal/roles')?>" >Roles</a></li><?php endif;?>
                     </ul>
                 </li>
+                <?php endif;?>
             </ul>
             <div class="clearfix"></div>
         </div>

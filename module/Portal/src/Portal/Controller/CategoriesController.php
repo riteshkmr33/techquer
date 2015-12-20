@@ -7,7 +7,7 @@ use Zend\View\Model\ViewModel;
 use Portal\Form\AdminForm;
 use Portal\Model\Admins;
 
-class AdminsController extends AbstractActionController {
+class CategoriesController extends AbstractActionController {
 
     public $form;
     public $adminsTable;
@@ -62,7 +62,7 @@ class AdminsController extends AbstractActionController {
                 $this->getAdminsTable()->saveAdmins($users, $loggedInUser->adminId, $loggedInUser->adminId);
                 $this->flashMessenger()->addSuccessMessage('User added successfully..!!');
 
-                // Redirect to listing
+                // Redirect to list of pages
                 return $this->redirect()->toRoute('portal/admins');
             }
         }
@@ -101,7 +101,7 @@ class AdminsController extends AbstractActionController {
                 $this->getAdminsTable()->saveAdmins($form->getData(), '', $loggedInUser->adminId);
                 $this->flashMessenger()->addSuccessMessage('User updated successfully..!!');
 
-                // Redirect to listing
+                // Redirect to listing pages
                 return $this->redirect()->toRoute('portal/admins');
             }
         }
@@ -118,11 +118,10 @@ class AdminsController extends AbstractActionController {
             return $this->redirect()->toRoute('portal/admins');
         }
         
-        $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-        $this->getAdminsTable()->changeStatus($id, 4, $loggedInUser->adminId);
-        $this->flashMessenger()->addSuccessMessage('User(s) deleted successfully..!!');
+        $this->getAdminsTable()->changeStatus($id, 4);
+        $this->flashMessenger()->addSuccessMessage('User deleted successfully..!!');
 
-        // Redirect to listing
+        // Redirect to listing page
         return $this->redirect()->toRoute('portal/admins');
     }
     
@@ -134,11 +133,10 @@ class AdminsController extends AbstractActionController {
             return $this->redirect()->toRoute('portal/admins');
         }
         
-        $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-        $this->getAdminsTable()->changeStatus($ids, $this->request->getQuery('status',1), $loggedInUser->adminId);
+        $this->getAdminsTable()->changeStatus($ids, $this->request->getQuery('status',1));
         $this->flashMessenger()->addSuccessMessage('Status updated successfully..!!');
 
-        // Redirect to listing
+        // Redirect to listing page
         return $this->redirect()->toRoute('portal/admins');
     }
 

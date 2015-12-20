@@ -11,6 +11,14 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\TableGateway;
 use Portal\Model\Admins;
 use Portal\Model\AdminsTable;
+use Portal\Model\Articles;
+use Portal\Model\ArticlesTable;
+use Portal\Model\Categories;
+use Portal\Model\CategoriesTable;
+use Portal\Model\Roles;
+use Portal\Model\RolesTable;
+use Portal\Model\Tags;
+use Portal\Model\TagsTable;
 
 class Module {
 
@@ -49,8 +57,10 @@ class Module {
         $eventManager->attach(MvcEvent::EVENT_DISPATCH, function($e) {
             /* Controller and action name getting code starts here */
             $viewModel = $e->getViewModel();
+            $admins = $e->getApplication()->getServiceManager()->get('Portal\Model\AdminsTable');
             $viewModel->setVariable('controller', str_replace("Portal\Controller", "", $e->getRouteMatch()->getParam('controller')));
             $viewModel->setVariable('action', $e->getRouteMatch()->getParam('action'));
+            $viewModel->setVariable('permissions', $admins->getPermissionsByUsername($e->getApplication()->getServiceManager()->get('AuthService')->getIdentity()));
             /* Controller and action name getting code ends here */
             $controller = $e->getTarget();
             if ($controller instanceof Controller\Authcontroller) {
@@ -107,7 +117,59 @@ class Module {
                     $resultSetPrototype->setArrayObjectPrototype(new Admins());
                     return new TableGateway('admins', $dbAdapter, null, $resultSetPrototype);
                 },
-            /* Admins table ends */
+                /* Admins table ends */
+                /* Articles table starts */
+                'Portal\Model\ArticlesTable' => function($sm) {
+                    $tableGateway = $sm->get('ArticlesTableGateway');
+                    $table = new ArticlesTable($tableGateway);
+                    return $table;
+                },
+                'ArticlesTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Articles());
+                    return new TableGateway('articles', $dbAdapter, null, $resultSetPrototype);
+                },
+                /* Articles table ends */
+                /* Categories table starts */
+                'Portal\Model\CategoriesTable' => function($sm) {
+                    $tableGateway = $sm->get('CategoriesTableGateway');
+                    $table = new CategoriesTable($tableGateway);
+                    return $table;
+                },
+                'CategoriesTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Categories());
+                    return new TableGateway('categories', $dbAdapter, null, $resultSetPrototype);
+                },
+                /* Categories table ends */
+                /* Roles table starts */
+                'Portal\Model\RolesTable' => function($sm) {
+                    $tableGateway = $sm->get('RolesTableGateway');
+                    $table = new RolesTable($tableGateway);
+                    return $table;
+                },
+                'RolesTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Roles());
+                    return new TableGateway('roles', $dbAdapter, null, $resultSetPrototype);
+                },
+                /* Roles table ends */
+                /* Tags table starts */
+                'Portal\Model\TagsTable' => function($sm) {
+                    $tableGateway = $sm->get('TagsTableGateway');
+                    $table = new TagsTable($tableGateway);
+                    return $table;
+                },
+                'TagsTableGateway' => function ($sm) {
+                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $resultSetPrototype = new ResultSet();
+                    $resultSetPrototype->setArrayObjectPrototype(new Tags());
+                    return new TableGateway('tags', $dbAdapter, null, $resultSetPrototype);
+                },
+            /* Tags table ends */
             )
         );
     }

@@ -5,11 +5,11 @@ namespace Portal\Form;
 use Zend\Captcha;
 use Zend\Form\Form;
 
-class AdminForm extends Form {
+class CategoryForm extends Form {
 
     public function __construct() {
         parent::__construct();
-        $this->setAttributes(array('method' => 'post', 'id' => 'adminForm', 'class' => 'form-horizontal', 'action' => ''));
+        $this->setAttributes(array('method' => 'post', 'id' => 'loginForm', 'class' => 'form-horizontal', 'action' => ''));
         
         $this->add(array(
             'name' => 'adminId',
@@ -88,7 +88,6 @@ class AdminForm extends Form {
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'value' => 1
             )
         ));
 
@@ -102,7 +101,6 @@ class AdminForm extends Form {
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'value' => 2
             )
         ));
 

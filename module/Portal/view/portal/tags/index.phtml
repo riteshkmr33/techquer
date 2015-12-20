@@ -11,7 +11,7 @@
                         <a href="<?php echo $this->url('portal') ?>">Dashboard</a>
                     </li>
                     <li class="active">
-                        Admins
+                        Tags
                     </li>
                 </ol>
             </div>
@@ -22,9 +22,9 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title"><b>Admins</b></h4>
+                    <h4 class="m-t-0 header-title"><b>Tags</b></h4>
                     <p class="text-muted font-13">
-                        Backend users
+                        Article Tags
                     </p>
                     <?php if (isset($successMsgs) && count($successMsgs) > 0): ?>
                         <div class="alert alert-success alert-dismissible">
@@ -49,22 +49,28 @@
                     <div class="bootstrap-table">
                         <div class="fixed-table-toolbar">
                             <div class="bars pull-left">
-                                <button id="demo-delete-row" class="btn btn-danger delete" disabled="" data-href="<?php echo $this->url('portal/admins',array('action'=>'delete'))?>">
+                                <?php if (in_array(4,$this->layout()->permissions[2])):?>
+                                <button id="demo-delete-row" class="btn btn-danger delete" disabled="" data-href="<?php echo $this->url('portal/tags',array('action'=>'delete'))?>">
                                     <i class="fa fa-trash-o m-r-5"></i>
                                     Delete
                                 </button>
-                                <button id="demo-delete-row" class="btn btn-danger status" disabled="" data-val="3" data-href="<?php echo $this->url('portal/admins',array('action'=>'status'))?>">
+                                <?php endif;?>
+                                <?php if (in_array(3,$this->layout()->permissions[2])):?>
+                                <button id="demo-delete-row" class="btn btn-warning status" disabled="" data-val="2" data-href="<?php echo $this->url('portal/tags',array('action'=>'status'))?>">
                                     <i class="fa fa-times m-r-5"></i>
-                                    Suspend
+                                    Inactive
                                 </button>
-                                <button id="demo-delete-row" class="btn btn-success status" disabled="" data-val="1" data-href="<?php echo $this->url('portal/admins',array('action'=>'status'))?>">
+                                <button id="demo-delete-row" class="btn btn-success status" disabled="" data-val="1" data-href="<?php echo $this->url('portal/tags',array('action'=>'status'))?>">
                                     <i class="fa fa-check m-r-5"></i>
                                     Active
                                 </button>
-                                <a id="demo-btn-addrow" class="btn btn-default" href="<?php echo $this->url('portal/admins', array('action' => 'add')); ?>">
+                                <?php endif;?>
+                                <?php if (in_array(2,$this->layout()->permissions[2])):?>
+                                <a id="demo-btn-addrow" class="btn btn-default" href="<?php echo $this->url('portal/tags', array('action' => 'add')); ?>">
                                     <i class="fa fa-plus m-r-5"></i>
-                                    Add New User
+                                    Add New Tag
                                 </a>
+                                <?php endif;?>
                             </div>
                             <!--<div class="columns columns-right btn-group pull-right">
                                 <button class="btn btn-default" title="Refresh" name="refresh" type="button">
@@ -87,10 +93,7 @@
                                     <thead>
                                         <tr>
                                             <th ><input type="checkbox" class="check-all" style="margin-left: 30px !important" /></th>
-                                            <th >Name</th>
-                                            <th >Username</th>
-                                            <th >Email</th>
-                                            <th >Role</th>
+                                            <th >Tag</th>
                                             <th >Created On</th>
                                             <th >Created By</th>
                                             <th >Status</th>
@@ -99,24 +102,25 @@
                                     </thead>
 
                                     <tbody>
-                                        <?php if (isset($admins) && count($admins) > 0): ?>
-                                            <?php foreach ($admins as $admin): ?>
+                                        <?php if (isset($tags) && count($tags) > 0): ?>
+                                            <?php foreach ($tags as $tag): ?>
                                                 <tr>
-                                                    <td>#<?php echo isset($admin->adminId) ? $admin->adminId : ''; ?> <input type="checkbox" class="check-it" value="<?php echo isset($admin->adminId) ? $admin->adminId : ''; ?>" /></td>
-                                                    <td><?php echo isset($admin->displayName) ? $admin->displayName : 'NA'; ?></td>
-                                                    <td><?php echo isset($admin->userName) ? $admin->userName : 'NA'; ?></td>
-                                                    <td><?php echo isset($admin->email) ? $admin->email : 'NA'; ?></td>
-                                                    <td><?php echo isset($admin->role) ? $admin->role : 'NA'; ?></td>
-                                                    <td><?php echo isset($admin->createdDate) ? date('D d, M Y', strtotime($admin->createdDate)) : ''; ?></td>
-                                                    <td><?php echo isset($admin->creator) ? $admin->creator : ''; ?></td>
-                                                    <td><?php echo isset($admin->label) ? $admin->label : ''; ?></td>
+                                                    <td>#<?php echo isset($tag->tagId) ? $tag->tagId : ''; ?> <input type="checkbox" class="check-it" value="<?php echo isset($tag->tagId) ? $tag->tagId : ''; ?>" /></td>
+                                                    <td><?php echo isset($tag->tag) ? $tag->tag : 'NA'; ?></td>
+                                                    <td><?php echo isset($tag->createdDate) ? date('D d, M Y', strtotime($tag->createdDate)) : ''; ?></td>
+                                                    <td><?php echo isset($tag->creator) ? $tag->creator : ''; ?></td>
+                                                    <td><?php echo isset($tag->label) ? $tag->label : ''; ?></td>
                                                     <td class="actions">
-                                                        <button class="on-default edit-row" onclick="document.location.href = '<?php echo $this->url('portal/admins',array('action'=>'edit','id'=>$admin->adminId))?>'">
+                                                        <?php if (in_array(3,$this->layout()->permissions[2])):?>
+                                                        <button class="on-default edit-row" onclick="document.location.href = '<?php echo $this->url('portal/tags',array('action'=>'edit','id'=>$tag->tagId))?>'">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
-                                                        <button class="delete" data-href="<?php echo $this->url('portal/admins',array('action'=>'delete','id'=>$admin->adminId))?>">
+                                                        <?php endif;?>
+                                                        <?php if (in_array(4,$this->layout()->permissions[2])):?>
+                                                        <button class="delete" data-href="<?php echo $this->url('portal/tags',array('action'=>'delete','id'=>$tag->tagId))?>">
                                                             <i class="fa fa-trash-o"></i>
                                                         </button>
+                                                        <?php endif;?>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
@@ -131,10 +135,10 @@
 
                             <?php
                             echo $this->paginationControl(
-                                    $admins, // the paginator object
+                                    $tags, // the paginator object
                                     'sliding', // the scrolling style; see http://zf2.readthedocs.org/en/release-2.1.4/modules/zend.paginator.usage.html#rendering-pages-with-view-scripts
                                     array('partial/portalPagination.phtml', 'Portal'), // the partial to use to render the control
-                                    array('route' => 'portal/admins')  //'routeParams' => $this->postedData  the route to link to when a user clicks a control link
+                                    array('route' => 'portal/tags')  //'routeParams' => $this->postedData  the route to link to when a user clicks a control link
                             );
                             ?>
                         </div>

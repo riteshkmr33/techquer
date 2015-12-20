@@ -4,23 +4,32 @@ namespace Portal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Portal\Form\AdminForm;
-use Portal\Model\Admins;
+use Portal\Form\TagForm;
+use Portal\Model\Tags;
 
-class AdminsController extends AbstractActionController {
+class TagsController extends AbstractActionController {
 
     public $form;
+    public $tagsTable;
     public $adminsTable;
     public $errors = array();
 
     private function getForm() {
         if (!$this->form) {
-            $this->form = new AdminForm();
+            $this->form = new TagForm();
         }
 
         return $this->form;
     }
 
+    private function getTagsTable() {
+        if (!$this->tagsTable) {
+            $this->tagsTable = $this->getServiceLocator()->get('Portal\Model\TagsTable');
+        }
+
+        return $this->tagsTable;
+    }
+    
     private function getAdminsTable() {
         if (!$this->adminsTable) {
             $this->adminsTable = $this->getServiceLocator()->get('Portal\Model\AdminsTable');
@@ -31,12 +40,12 @@ class AdminsController extends AbstractActionController {
 
     public function indexAction() {
         $search = $this->request->getQuery('search');
-        $paginator = $this->getAdminsTable()->fetchAll(true, array('search'=>$search));
+        $paginator = $this->getTagsTable()->fetchAll(true, array('search'=>$search));
         //echo '<pre>'; print_r($paginator->getTotalItemCount()); exit;
         $paginator->setCurrentPageNumber((int) $this->Params()->fromQuery('page', 1));
         $paginator->setItemCountPerPage(10);
 
-        return new ViewModel(array('admins' => $paginator,
+        return new ViewModel(array('tags' => $paginator,
             'successMsgs' => $this->flashMessenger()->getCurrentSuccessMessages(),
             'errors' => $this->flashMessenger()->getCurrentErrorMessages()
         ));
@@ -49,60 +58,59 @@ class AdminsController extends AbstractActionController {
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $users = new Admins;
+            $tags = new Tags;
             // Adding already exist validation on runtime
-            $users->getInputFilter()->get('userName')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'admins', 'field' => 'userName', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'))));
+            $tags->getInputFilter()->get('tag')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'tags', 'field' => 'tag', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'))));
             
-            $form->setInputFilter($users->getInputFilter());
+            $form->setInputFilter($tags->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $users->exchangeArray($form->getData());
+                $tags->exchangeArray($form->getData());
                 $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-                $this->getAdminsTable()->saveAdmins($users, $loggedInUser->adminId, $loggedInUser->adminId);
-                $this->flashMessenger()->addSuccessMessage('User added successfully..!!');
+                $this->getTagsTable()->saveTags($tags, $loggedInUser->adminId, $loggedInUser->adminId);
+                $this->flashMessenger()->addSuccessMessage('Tag added successfully..!!');
 
                 // Redirect to listing
-                return $this->redirect()->toRoute('portal/admins');
+                return $this->redirect()->toRoute('portal/tags');
             }
         }
 
-        return new ViewModel(array('form' => $form, 'salt' => $this->generateSalt()));
+        return new ViewModel(array('form' => $form));
     }
 
     public function editAction() {
 
         $id = (int) $this->params()->fromRoute('id', 0);
         if (!$id) {
-            return $this->redirect()->toRoute('portal/admins');
+            return $this->redirect()->toRoute('portal/tags');
         }
 
-        if (!$users = $this->getAdminsTable()->getAdmin($id)) {
-            $this->flashMessenger()->addErrorMessage('No user found..!!');
-            return $this->redirect()->toRoute('portal/admins');
+        if (!$tags = $this->getTagsTable()->getTag($id)) {
+            $this->flashMessenger()->addErrorMessage('No tag found..!!');
+            return $this->redirect()->toRoute('portal/tags');
         }
 
         $form = $this->getForm();
-        $form->bind($users);
+        $form->bind($tags);
         $request = $this->getRequest();
 
         if ($request->isPost()) {
 
             // Adding already exist validation on runtime excluding the current record
-            $users->getInputFilter()->get('userName')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'admins', 'field' => 'userName', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'), 'exclude' => array('field' => 'adminId', 'value' => $id))));
-            $users->getInputFilter()->get('password')->setRequired(false);
-
-            $form->setInputFilter($users->getInputFilter());
+            $tags->getInputFilter()->get('tag')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'tags', 'field' => 'tag', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'), 'exclude' => array('field' => 'tagId', 'value' => $id))));
+            
+            $form->setInputFilter($tags->getInputFilter());
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
 
                 $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-                $this->getAdminsTable()->saveAdmins($form->getData(), '', $loggedInUser->adminId);
-                $this->flashMessenger()->addSuccessMessage('User updated successfully..!!');
+                $this->getTagsTable()->saveTags($form->getData(), '', $loggedInUser->adminId);
+                $this->flashMessenger()->addSuccessMessage('Tag updated successfully..!!');
 
                 // Redirect to listing
-                return $this->redirect()->toRoute('portal/admins');
+                return $this->redirect()->toRoute('portal/tags');
             }
         }
 
@@ -115,15 +123,15 @@ class AdminsController extends AbstractActionController {
         
         if (!$id) {
             $this->flashMessenger()->addErrorMessage('Invalid Ids..!!');
-            return $this->redirect()->toRoute('portal/admins');
+            return $this->redirect()->toRoute('portal/tags');
         }
         
         $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-        $this->getAdminsTable()->changeStatus($id, 4, $loggedInUser->adminId);
-        $this->flashMessenger()->addSuccessMessage('User(s) deleted successfully..!!');
+        $this->getTagsTable()->changeStatus($id, 4, $loggedInUser->adminId);
+        $this->flashMessenger()->addSuccessMessage('Tag(s) deleted successfully..!!');
 
         // Redirect to listing
-        return $this->redirect()->toRoute('portal/admins');
+        return $this->redirect()->toRoute('portal/tags');
     }
     
     public function statusAction() {
@@ -131,24 +139,15 @@ class AdminsController extends AbstractActionController {
         
         if (count($ids) == 0) {
             $this->flashMessenger()->addErrorMessage('Invalid Ids..!!');
-            return $this->redirect()->toRoute('portal/admins');
+            return $this->redirect()->toRoute('portal/tags');
         }
         
         $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-        $this->getAdminsTable()->changeStatus($ids, $this->request->getQuery('status',1), $loggedInUser->adminId);
+        $this->getTagsTable()->changeStatus($ids, $this->request->getQuery('status',1), $loggedInUser->adminId);
         $this->flashMessenger()->addSuccessMessage('Status updated successfully..!!');
 
         // Redirect to listing
-        return $this->redirect()->toRoute('portal/admins');
-    }
-
-    private function generateSalt($length = 32) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        return $randomString;
+        return $this->redirect()->toRoute('portal/tags');
     }
 
 }

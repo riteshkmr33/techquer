@@ -27,16 +27,6 @@ class Admins implements InputFilterAwareInterface {
     /* status table */
     public $label;
     
-    /* role permission table */
-    public $moduleId;
-    public $sectionId;
-    
-    /* modules table */
-    public $moduleName;
-    
-    /* section table */
-    public $secton;
-    
     protected $inputFilter;
 
     public function exchangeArray($data) {
@@ -55,18 +45,7 @@ class Admins implements InputFilterAwareInterface {
         $this->deletePermission = (!empty($data['deletePermission'])) ? $data['deletePermission'] : null;
         $this->creator = (!empty($data['creator'])) ? $data['creator'] : null;
         
-        /* status table */
         $this->label = (!empty($data['label'])) ? $data['label'] : null;
-        
-        /* role permission table */
-        $this->moduleId = (!empty($data['moduleId'])) ? $data['moduleId'] : null;
-        $this->sectionId = (!empty($data['sectionId'])) ? $data['sectionId'] : null;
-        
-        /* modules table */
-        $this->moduleName = (!empty($data['moduleName'])) ? $data['moduleName'] : null;
-        
-        /* section table */
-        $this->section = (!empty($data['section'])) ? $data['section'] : null;
     }
     
     // Add content to this method:

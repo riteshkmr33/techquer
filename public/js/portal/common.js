@@ -30,9 +30,13 @@ $(function () {
     $(document.body).on('click', 'input.check-all', function () {
         if ($(this).is(':checked')) {
             $('input.check-it').prop('checked', true);
-            $('button.delete, button.status').prop('disabled', false);
         } else {
             $('input.check-it').prop('checked', false);
+        }
+        
+        if ($('input.check-it:checked').length > 0) {
+            $('button.delete, button.status').prop('disabled', false);
+        } else {
             $('button.delete, button.status').prop('disabled', true);
         }
     });

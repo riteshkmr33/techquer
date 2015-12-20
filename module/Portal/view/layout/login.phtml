@@ -58,17 +58,18 @@
         <script>
             function authenticate(data) {
                 if (data.status == 1) {
-                    $('.alert-success').html(data.message).fadeIn('sloq').delay(3000).fadeOut('slow',function(){
+                    $('.alert-success').html(data.message).slideDown('slow').delay(3000).slideUp('slow',function(){
                         document.location.href = basePath;
                     });
                 } else {
-                    $('.alert-danger').html(data.message).fadeIn('slow');
+                    $('.alert-danger').html(data.message).slideDown('slow');
                 }
                 
                 $('.animationload').fadeOut('slow');
             }
             
             $(document.body).on('submit', 'form#loginForm', function() {
+                $('.alert').slideUp();
                 send(basePath+"auth/authenticate/",{username: $('input#username').val(),password: $('input#password').val(),loginKey: $('input#loginKey').val()},beforeSend, authenticate);
                 return false;
             })

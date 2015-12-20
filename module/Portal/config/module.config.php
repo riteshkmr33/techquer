@@ -50,6 +50,21 @@ return array(
                             ),
                         ),
                     ),
+                    /* Articles route */
+                    'articles' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/articles[/:action][/:id][/]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Articles',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                     /* Auth route */
                     'auth' => array(
                         'type' => 'Segment',
@@ -60,6 +75,51 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Portal\Controller\Auth',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    /* Categories route */
+                    'categories' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/categories[/:action][/:id][/]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Categories',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    /* Roles route */
+                    'roles' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/roles[/:action][/:id][/]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Roles',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    /* Tags route */
+                    'tags' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/tags[/:action][/:id][/]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Portal\Controller\Tags',
                                 'action' => 'index',
                             ),
                         ),
@@ -89,9 +149,13 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Portal\Controller\Index' => 'Portal\Controller\IndexController',
+            'Portal\Controller\Admins' => 'Portal\Controller\AdminsController',
+            'Portal\Controller\Articles' => 'Portal\Controller\ArticlesController',
             'Portal\Controller\Auth' => 'Portal\Controller\AuthController',
-            'Portal\Controller\Admins' => 'Portal\Controller\AdminsController'
+            'Portal\Controller\Categories' => 'Portal\Controller\CategoriesController',
+            'Portal\Controller\Index' => 'Portal\Controller\IndexController',
+            'Portal\Controller\Roles' => 'Portal\Controller\RolesController',
+            'Portal\Controller\Tags' => 'Portal\Controller\TagsController',
         ),
     ),
     'view_manager' => array(

@@ -1,0 +1,98 @@
+<?php $form->prepare(); ?>
+<div class="content">
+    <div class="container">
+
+        <!-- Page-Title -->
+        <div class="row">
+            <div class="col-sm-12">
+                <!--<h4 class="page-title">Admins</h4>-->
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="<?php echo $this->url('portal') ?>">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="<?php echo $this->url('portal/roles') ?>">Roles</a>
+                    </li>
+                    <li class="active">
+                        Edit Role
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <!--Custom Toolbar-->
+        <!--===================================================-->
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title"><b>Edit Role</b></h4>
+                    <p class="text-muted m-b-30 font-13">Edit Admin Roles</p>
+                    
+                    <div class="row">
+                        <?php echo $this->form()->openTag($form); ?>
+                        <?php echo $this->formHidden($form->get('roleId')); ?>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('role') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <?php $field = $form->get('status') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formselect($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <td><strong>Module</strong></td>
+                                        <?php if (isset($sections) && count($sections) > 0):?>
+                                            <?php foreach ($sections as $section):?>
+                                                <td><strong><?php echo $section->section?></strong></td>
+                                            <?php endforeach;?>
+                                        <?php endif;?>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr >
+                                    <?php if (isset($fields) && count($fields) > 0):?>
+                                        <?php foreach ($fields as $id => $module):?>
+                                            <td><?php echo $module['name']?></td>
+                                            <?php foreach ($module['sections'] as $sectionId => $section):?>
+                                                <td><?php $field = (isset($permissions[$id]) && in_array($sectionId,$permissions[$id]))?$form->get('permissions['.$id.']['.$sectionId.']')->setAttributes(array('checked'=>'checked')):$form->get('permissions['.$id.']['.$sectionId.']'); echo $this->formCheckbox($field); echo strip_tags($this->formElementErrors($field));?></td>
+                                            <?php endforeach;?>
+                                    </tr><tr>
+                                        <?php endforeach;?>
+                                    <?php endif;?>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group text-center">
+                                <button class="btn btn-primary waves-effect waves-light" type="submit"> Submit </button>
+                                <a class="btn btn-default waves-effect waves-light" href="<?php echo $this->url('portal/roles'); ?>"> Cancel </a>
+                            </div>
+                        </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
