@@ -4,87 +4,41 @@ namespace Portal\Form;
 
 use Zend\Captcha;
 use Zend\Form\Form;
+use Portal\Model\CategoriesTable;
 
 class CategoryForm extends Form {
-
-    public function __construct() {
+    
+    private $cats;
+    
+    public function __construct(CategoriesTable $cats) {
         parent::__construct();
-        $this->setAttributes(array('method' => 'post', 'id' => 'loginForm', 'class' => 'form-horizontal', 'action' => ''));
+        $this->cats = $cats;
+        $this->setAttributes(array('method' => 'post', 'id' => 'categoryForm', 'class' => 'form-horizontal', 'action' => ''));
         
         $this->add(array(
-            'name' => 'adminId',
+            'name' => 'catId',
             'type' => 'Hidden',
         ));
         
         $this->add(array(
             'type' => 'text',
-            'name' => 'displayName',
+            'name' => 'category',
             'options' => array(
-                'label' => 'Name',
+                'label' => 'Category',
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'id' => 'displayName',
+                'id' => 'category',
             ),
         ));
-
+        
         $this->add(array(
-            'type' => 'text',
-            'name' => 'userName',
-            'options' => array(
-                'label' => 'Username',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'userName',
-            ),
-        ));
-
-        $this->add(array(
-            'type' => 'password',
-            'name' => 'password',
-            'autocomplete' => 'off',
-            'options' => array(
-                'label' => 'Password',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'password',
-            ),
-        ));
-
-        $this->add(array(
-            'type' => 'text',
-            'name' => 'salt',
-            'autocomplete' => 'off',
-            'options' => array(
-                'label' => 'Salt',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'salt',
-            ),
-        ));
-
-        $this->add(array(
-            'type' => 'text',
-            'name' => 'email',
-            'options' => array(
-                'label' => 'E-mail',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'email',
-            ),
-        ));
-
-        $this->add(array(
-            'name' => 'status',
+            'name' => 'parentId',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Status',
-                'value_options' => array( '1' => 'Active', '3' => 'Suspended', '4' => 'Deleted'),
-                'empty_option' => '--- Select Status ---'
+                'label' => 'Parent Category',
+                'value_options' => $this->getCats(),
+                'empty_option' => '--- Select Category ---'
             ),
             'attributes' => array(
                 'class' => 'form-control',
@@ -92,15 +46,16 @@ class CategoryForm extends Form {
         ));
 
         $this->add(array(
-            'name' => 'roleId',
+            'name' => 'status',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Role',
-                'value_options' => $this->getRoles(),
-                'empty_option' => '--- Select Role ---'
+                'label' => 'Status',
+                'value_options' => array( '1' => 'Active', '2' => 'Inactive', '4' => 'Deleted'),
+                'empty_option' => '--- Select Status ---'
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'value' => 1
             )
         ));
 
@@ -113,13 +68,14 @@ class CategoryForm extends Form {
         ));
     }
 
-    function getRoles() {
-        $selectData = array('1' => 'Admin','2' => 'Sub-Admin');
-        /* $results = $this->roles->fetchAll(false);
+    function getCats()
+    {
+        $selectData = array(0 => 'Parent');
+        $results = $this->cats->fetchAll(false);
 
-          foreach ($results as $result) {
-          $selectData[$result->roleId] = ucwords($result->name);
-          } */
+        foreach ($results as $result) {
+            $selectData[$result->catId] = $result->category;
+        }
 
         return $selectData;
     }

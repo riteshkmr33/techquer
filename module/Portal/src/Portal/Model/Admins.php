@@ -27,6 +27,9 @@ class Admins implements InputFilterAwareInterface {
     /* status table */
     public $label;
     
+    /* roles table */
+    public $role;
+    
     /* role permission table */
     public $moduleId;
     public $sectionId;
@@ -57,6 +60,9 @@ class Admins implements InputFilterAwareInterface {
         
         /* status table */
         $this->label = (!empty($data['label'])) ? $data['label'] : null;
+        
+        /* roles table */
+        $this->role = (!empty($data['role'])) ? $data['role'] : null;
         
         /* role permission table */
         $this->moduleId = (!empty($data['moduleId'])) ? $data['moduleId'] : null;

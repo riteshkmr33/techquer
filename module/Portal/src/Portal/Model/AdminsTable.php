@@ -23,6 +23,7 @@ class AdminsTable {
         if ($paginate == true) {
             $select = new Select('admins');
             $select->columns(array('*', new Expression('creators.displayName AS creator')));
+            $select->join('roles', 'admins.roleId = roles.roleId', array('role'), 'inner');
             $select->join(array('creators' => 'admins'), 'admins.createdBy = creators.adminId', array(), 'inner');
             $select->join('lookup_status', 'admins.status = lookup_status.statusId', array('label'), 'inner');
 
@@ -113,8 +114,8 @@ class AdminsTable {
         $this->tableGateway->delete(array('adminId' => $id, 'deletePermission' => 1));
     }
 
-    public function changeStatus($ids, $status) {
-        $this->tableGateway->update(array('status' => $status, 'updatedBy' => $updatedBy, 'updatedDate' => date('Y-m-d h:i:s')), array('tagId' => $ids, 'deletePermission' => 1));
+    public function changeStatus($ids, $status, $updatedBy) {
+        $this->tableGateway->update(array('status' => $status, 'updatedBy' => $updatedBy, 'updatedDate' => date('Y-m-d h:i:s')), array('adminId' => $ids, 'deletePermission' => 1));
     }
 
 }

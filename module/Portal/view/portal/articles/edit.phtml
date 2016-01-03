@@ -11,10 +11,10 @@
                         <a href="<?php echo $this->url('portal') ?>">Dashboard</a>
                     </li>
                     <li>
-                        <a href="<?php echo $this->url('portal/admins') ?>">Admins</a>
+                        <a href="<?php echo $this->url('portal/articles') ?>">Articles</a>
                     </li>
                     <li class="active">
-                        Edit User
+                        Edit Article
                     </li>
                 </ol>
             </div>
@@ -25,74 +25,23 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card-box">
-                    <h4 class="m-t-0 header-title"><b>Edit User</b></h4>
-                    <p class="text-muted m-b-30 font-13">Edit Admin Users</p>
-                    
+                    <h4 class="m-t-0 header-title"><b>Edit Article</b></h4>
+                    <p class="text-muted m-b-30 font-13">Edit News Article</p>
+                    <?php if (isset($file_errors) && count($file_errors) > 0): ?>
+                        <div class="alert alert-danger alert-dismissible">
+                            <button class="close" aria-hidden="true" data-dismiss="alert" type="button">×</button>
+                            <?php
+                            foreach ($file_errors as $msg) {
+                                echo $msg . ' <br/>';
+                            }
+                            ?>
+                        </div>
+                    <?php endif; ?>
                     <div class="row">
                         <?php echo $this->form()->openTag($form); ?>
-                        <?php echo $this->formHidden($form->get('adminId')); ?>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('displayName') ?>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
-                                <div class="col-md-10">
-                                    <?php echo $this->formInput($field); ?>
-                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
-                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('userName') ?>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
-                                <div class="col-md-10">
-                                    <?php echo $this->formInput($field); ?>
-                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
-                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('password') ?>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
-                                <div class="col-md-10">
-                                    <?php echo $this->formInput($field); ?>
-                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
-                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('salt') ?>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
-                                <div class="col-md-10">
-                                    <?php echo $this->formInput($field); ?>
-                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
-                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('email') ?>
-                            <div class="form-group">
-                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
-                                <div class="col-md-10">
-                                    <?php echo $this->formInput($field); ?>
-                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
-                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <?php $field = $form->get('roleId') ?>
+                        <?php echo $this->formHidden($form->get('articleId')); ?>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('catId') ?>
                             <div class="form-group">
                                 <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
                                 <div class="col-md-10">
@@ -103,7 +52,97 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-9">
+                            <?php $field = $form->get('tags') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formselect($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('title') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('metaTitle') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formInput($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('summary') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formTextarea($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('metaDescription') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formTextarea($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('metaKeywords') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-10">
+                                    <?php echo $this->formTextarea($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <?php $field = $form->get('file_url') ?>
+                            <div class="form-group">
+                                <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
+                                <div class="col-md-6">
+                                    <?php echo $this->formFile($field); ?>
+                                    <ul id="parsley-id-8" class="parsley-errors-list filled">
+                                        <li class="parsley-required"><?php echo strip_tags($this->formElementErrors($field)); ?></li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-3">
+                                    <?php if (isset($article->filePath) && !empty($article->filePath)):?>
+                                        <img src="<?php echo $article->filePath?>" width="40" height="40" />
+                                        <input type="hidden" name="oldFile" value="<?php echo $article->filePath?>" />
+                                    <?php endif;?>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
                             <?php $field = $form->get('status') ?>
                             <div class="form-group">
                                 <label class="col-md-2 control-label"><?php echo strip_tags($this->formLabel($field)); ?></label>
@@ -115,10 +154,10 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-12">
+                        <div class="col-md-9">
                             <div class="form-group text-center">
                                 <button class="btn btn-primary waves-effect waves-light" type="submit"> Submit </button>
-                                <a class="btn btn-default waves-effect waves-light" href="<?php echo $this->url('portal/admins'); ?>"> Cancel </a>
+                                <a class="btn btn-default waves-effect waves-light" href="<?php echo $this->url('portal/articles'); ?>"> Cancel </a>
                             </div>
                         </div>
 
@@ -129,3 +168,32 @@
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        if($("textarea.editor").length > 0){
+            tinymce.init({
+                selector: "textarea.editor",
+                theme: "modern",
+                height:300,
+                plugins: [
+                    "advlist autolink link image lists charmap print preview hr anchor pagebreak spellchecker",
+                    "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+                    "save table contextmenu directionality emoticons template paste textcolor"
+                ],
+                toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | l      ink image | print preview media fullpage | forecolor backcolor emoticons", 
+                style_formats: [
+                    {title: 'Bold text', inline: 'b'},
+                    {title: 'Red text', inline: 'span', styles: {color: '#ff0000'}},
+                    {title: 'Red header', block: 'h1', styles: {color: '#ff0000'}},
+                    {title: 'Example 1', inline: 'span', classes: 'example1'},
+                    {title: 'Example 2', inline: 'span', classes: 'example2'},
+                    {title: 'Table styles'},
+                    {title: 'Table row 1', selector: 'tr', classes: 'tablerow1'}
+                ]
+            });    
+        }
+        
+        $(".select2").select2();
+    });
+</script>

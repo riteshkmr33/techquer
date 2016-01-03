@@ -10,9 +10,9 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect;
 
-use Portal\Model\Admins;
+use Portal\Model\Categories;
 
-class AdminsTable {
+class CategoriesTable {
 
     protected $tableGateway;
 
@@ -23,20 +23,21 @@ class AdminsTable {
     
     public function fetchAll($paginate=true, $filter = array()) {
         if ($paginate == true) {
-            $select = new Select('admins');
-            $select->columns(array('*',new Expression('creators.displayName AS creator')));
-            $select->join(array('creators'=>'admins'), 'admins.createdBy = creators.adminId',array(),'inner');
-            $select->join('lookup_status', 'admins.status = lookup_status.statusId',array('label'),'inner');
+            $select = new Select('categories');
+            $select->columns(array('*',new Expression('admins.displayName AS creator, parentCat.category AS parent')));
+            $select->join(array('parentCat'=>'categories'), 'categories.parentId = parentCat.catId',array(),'left');
+            $select->join('admins', 'categories.createdBy = admins.adminId',array(),'inner');
+            $select->join('lookup_status', 'categories.status = lookup_status.statusId',array('label'),'inner');
             
             /* Data filter code start here */
             if (count($filter) > 0) {
-                (isset($filter['search']) && !empty($filter['search']))?$select->where("admins.userName like '%".$filter['search']."%' OR admins.email like '%".$filter['search']."%' OR admins.displayName like '%".$filter['search']."%' "):'';
+                (isset($filter['search']) && !empty($filter['search']))?$select->where("categories.category like '%".$filter['search']."%' OR parentCat.category like '%".$filter['search']."%' "):'';
             }
             //echo str_replace('"','',$select->getSqlString()); //exit;
             /* Data filter code end here */
 
             $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Admins());
+            $resultSetPrototype->setArrayObjectPrototype(new Categories());
 
             $paginatorAdapter = new DbSelect($select, $this->tableGateway->getAdapter(), $resultSetPrototype);
             $paginator = new Paginator($paginatorAdapter);
@@ -47,13 +48,9 @@ class AdminsTable {
         return $this->tableGateway->select();
     }
     
-    public function getAdmin($userNameorId) {
+    public function getCategory($id) {
         
-        if (is_numeric($userNameorId)) {
-            $rowset = $this->tableGateway->select(array('adminId' => $userNameorId));
-        } else {
-            $rowset = $this->tableGateway->select(array('userName' => $userNameorId));
-        }
+        $rowset = $this->tableGateway->select(array('catId' => $id));
         
         $row = $rowset->current();
         
@@ -64,62 +61,38 @@ class AdminsTable {
         return $row;
     }
 
-    public function getPermissionsByUsername($username) {
-        $permissions = array();
-        if ($username != '') {
-            
-            $select = $this->tableGateway->getSql()->select();
-            $select->join('roleModules','users.roleId = roleModules.roleId',array('moduleId', 'create', 'read', 'update', 'delete'),'left');
-            $select->join('modules','modules.moduleId = roleModules.moduleId',array('name'),'left');
-            $select->where("username = '$username'");
-            //echo str_replace('"','',$select->getSqlString()); exit;
-            
-            $raw = $this->tableGateway->selectwith($select);
-            
-            foreach ($raw as $value) {
-                $permissions[$value->moduleId] = array('create' => $value->create, 'read' => $value->read, 'update' => $value->update, 'delete' => $value->delete, 'name' => $value->name);
-            }
-        }
-        return $permissions;
-    }
-    
-    public function saveAdmins(Admins $admin, $createdBy = '', $updatedBy = '' )
+    public function saveCategories(Categories $cat, $createdBy = '', $updatedBy = '' )
     {
         $data = array(
-            'userName' => $admin->userName,
-            'displayName' => $admin->displayName,
-            'email' => $admin->email,
-            'salt' => $admin->salt,
-            'roleId' => $admin->roleId,
-            'status' => $admin->status,
+            'category' => $cat->category,
+            'parentId' => $cat->parentId,
+            'status' => $cat->status,
         );
         
         ($createdBy != '')?$data['createdBy'] = $createdBy:'';
         ($updatedBy != '')?$data['updatedBy'] = $updatedBy:'';
         
-        $id = (int) $admin->adminId;
+        $id = (int) $cat->catId;
         if ($id == 0) {
-            $data['password'] = SHA1($admin->password.$admin->salt);
             $this->tableGateway->insert($data);
         } else {
-            ($admin->password != '')?$data['password'] = SHA1($admin->password.$admin->salt):'';
             $data['updatedDate'] = date('Y-m-d h:i:s');
-            if ($this->getAdmin($id)) {
-                $this->tableGateway->update($data, array('adminId' => $id));
+            if ($this->getCategory($id)) {
+                $this->tableGateway->update($data, array('catId' => $id));
             } else {
-                throw new \Exception('Admin does not exist');
+                throw new \Exception('Category does not exist');
             }
         }
     }
     
-    public function deleteAdmin($id)
+    public function deleteCategory($id)
     {
-        $this->tableGateway->delete(array('adminId' => $id, 'deletePermission' => 1));
+        $this->tableGateway->delete(array('catId' => $id));
     }
     
     public function changeStatus($ids, $status)
     {
-        $this->tableGateway->update(array('status' => $status), array('adminId' => $ids));
+        $this->tableGateway->update(array('status' => $status), array('catId' => $ids));
     }
 
 }

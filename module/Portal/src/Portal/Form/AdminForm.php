@@ -4,18 +4,22 @@ namespace Portal\Form;
 
 use Zend\Captcha;
 use Zend\Form\Form;
+use Portal\Model\RolesTable;
 
 class AdminForm extends Form {
 
-    public function __construct() {
+    private $roles;
+
+    public function __construct(RolesTable $roles) {
         parent::__construct();
+        $this->roles = $roles;
         $this->setAttributes(array('method' => 'post', 'id' => 'adminForm', 'class' => 'form-horizontal', 'action' => ''));
-        
+
         $this->add(array(
             'name' => 'adminId',
             'type' => 'Hidden',
         ));
-        
+
         $this->add(array(
             'type' => 'text',
             'name' => 'displayName',
@@ -83,7 +87,7 @@ class AdminForm extends Form {
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
                 'label' => 'Status',
-                'value_options' => array( '1' => 'Active', '3' => 'Suspended', '4' => 'Deleted'),
+                'value_options' => array('1' => 'Active', '3' => 'Suspended', '4' => 'Deleted'),
                 'empty_option' => '--- Select Status ---'
             ),
             'attributes' => array(
@@ -116,12 +120,13 @@ class AdminForm extends Form {
     }
 
     function getRoles() {
-        $selectData = array('1' => 'Admin','2' => 'Sub-Admin');
-        /* $results = $this->roles->fetchAll(false);
+        //$selectData = array('1' => 'Admin', '2' => 'Sub-Admin');
+        $selectData = array();
+        $results = $this->roles->fetchAll(false);
 
-          foreach ($results as $result) {
-          $selectData[$result->roleId] = ucwords($result->name);
-          } */
+        foreach ($results as $result) {
+            $selectData[$result->roleId] = ucwords($result->role);
+        }
 
         return $selectData;
     }

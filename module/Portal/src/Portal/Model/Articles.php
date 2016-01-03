@@ -7,16 +7,16 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class Admins implements InputFilterAwareInterface {
+class Articles implements InputFilterAwareInterface {
 
-    public $adminId;
-    public $userName;
-    public $password;
-    public $salt;
-    public $email;
-    public $displayName;
-    public $roleId;
-    public $deletePermission;
+    public $articleId;
+    public $catId;
+    public $title;
+    public $summary;
+    public $metaTitle;
+    public $metaDescription;
+    public $metaKeywords;
+    public $filePath;
     public $status;
     public $createdDate;
     public $updatedDate;
@@ -27,25 +27,31 @@ class Admins implements InputFilterAwareInterface {
     /* status table */
     public $label;
     
+    /* categories table */
+    public $category;
+    
     protected $inputFilter;
 
     public function exchangeArray($data) {
-        $this->adminId = (!empty($data['adminId'])) ? $data['adminId'] : null;
-        $this->userName = (!empty($data['userName'])) ? $data['userName'] : null;
-        $this->password = (!empty($data['password'])) ? $data['password'] : null;
-        $this->salt = (!empty($data['salt'])) ? $data['salt'] : null;
-        $this->email = (!empty($data['email'])) ? $data['email'] : null;
-        $this->displayName = (!empty($data['displayName'])) ? $data['displayName'] : null;
-        $this->roleId = (!empty($data['roleId'])) ? $data['roleId'] : null;
+        $this->articleId = (!empty($data['articleId'])) ? $data['articleId'] : null;
+        $this->catId = (!empty($data['catId'])) ? $data['catId'] : null;
+        $this->title = (!empty($data['title'])) ? $data['title'] : null;
+        $this->summary = (!empty($data['summary'])) ? $data['summary'] : null;
+        $this->metaTitle = (!empty($data['metaTitle'])) ? $data['metaTitle'] : null;
+        $this->metaDescription = (!empty($data['metaDescription'])) ? $data['metaDescription'] : null;
+        $this->metaKeywords = (!empty($data['metaKeywords'])) ? $data['metaKeywords'] : null;
+        $this->filePath = (!empty($data['filePath'])) ? $data['filePath'] : null;
         $this->status = (!empty($data['status'])) ? $data['status'] : 0;
         $this->createdDate = (!empty($data['createdDate'])) ? $data['createdDate'] : null;
         $this->updatedDate = (!empty($data['updatedDate'])) ? $data['updatedDate'] : null;
         $this->createdBy = (!empty($data['createdBy'])) ? $data['createdBy'] : null;
         $this->updatedBy = (!empty($data['updatedBy'])) ? $data['updatedBy'] : null;
-        $this->deletePermission = (!empty($data['deletePermission'])) ? $data['deletePermission'] : null;
         $this->creator = (!empty($data['creator'])) ? $data['creator'] : null;
         
         $this->label = (!empty($data['label'])) ? $data['label'] : null;
+        
+        /* categories table */
+        $this->category = (!empty($data['category'])) ? $data['category'] : null;
     }
     
     // Add content to this method:
@@ -66,64 +72,17 @@ class Admins implements InputFilterAwareInterface {
             $inputFilter = new InputFilter();
             
             $inputFilter->add(array(
-                'name' => 'userName',
+                'name' => 'catId',
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
                 'validators' => array(
                     array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 50,
-                        ),
+                        'name' => 'Digits',
                     )
                 ),
             ));
             
             $inputFilter->add(array(
-                'name' => 'password',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 150,
-                        ),
-                    )
-                ),
-            ));
-            
-            $inputFilter->add(array(
-                'name' => 'salt',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringTrim'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'encoding' => 'UTF-8',
-                            'min' => 1,
-                            'max' => 64,
-                        ),
-                    )
-                ),
-            ));
-            
-            $inputFilter->add(array(
-                'name' => 'email',
+                'name' => 'title',
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
@@ -137,16 +96,13 @@ class Admins implements InputFilterAwareInterface {
                             'min' => 1,
                             'max' => 255,
                         ),
-                    ),
-                    array(
-                        'name' => 'EmailAddress'
                     )
                 ),
             ));
             
             $inputFilter->add(array(
-                'name' => 'displayName',
-                'required' => true,
+                'name' => 'metaTitle',
+                'required' => false,
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
@@ -157,19 +113,27 @@ class Admins implements InputFilterAwareInterface {
                         'options' => array(
                             'encoding' => 'UTF-8',
                             'min' => 1,
-                            'max' => 100,
+                            'max' => 255,
                         ),
                     )
                 ),
             ));
             
             $inputFilter->add(array(
-                'name' => 'roleId',
-                'required' => true,
-                'validators' => array(
-                    array(
-                        'name' => 'Digits',
-                    )
+                'name' => 'metaDescription',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+            ));
+            
+            $inputFilter->add(array(
+                'name' => 'metaKeywords',
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
                 ),
             ));
             

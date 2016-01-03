@@ -15,7 +15,7 @@ class AdminsController extends AbstractActionController {
 
     private function getForm() {
         if (!$this->form) {
-            $this->form = new AdminForm();
+            $this->form = new AdminForm($this->getServiceLocator()->get('Portal\Model\RolesTable'));
         }
 
         return $this->form;

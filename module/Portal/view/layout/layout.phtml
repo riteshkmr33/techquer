@@ -22,6 +22,7 @@
                 ->appendStylesheet($this->basePath('css/portal/pages.css'))
                 ->appendStylesheet($this->basePath('css/portal/responsive.css'))
                 ->appendStylesheet($this->basePath('plugins/bootstrap-table/dist/bootstrap-table.min.css'))
+                ->appendStylesheet($this->basePath('plugins/select2/select2.css'))
                 ->appendStylesheet($this->basePath('plugins/sweetalert/dist/sweetalert.css'));
         ?>
 
@@ -207,6 +208,9 @@
         <script src="<?php echo $this->basePath('plugins/sweetalert/dist/sweetalert.min.js'); ?>"></script>
         <script src="<?php echo $this->basePath('js/portal/jquery.sweet-alert.init.js'); ?>"></script>
         <script src="<?php echo $this->basePath('js/portal/common.js'); ?>"></script>
+        <script src="<?php echo $this->basePath('plugins/tinymce/tinymce.min.js'); ?>"></script>
+        <script src="<?php echo $this->basePath('plugins/select2/select2.min.js'); ?>"></script>
+        <script src="<?php echo $this->basePath('plugins/bootstrap-filestyle/src/bootstrap-filestyle.min.js'); ?>"></script>
 
         <script type="text/javascript">
             jQuery(document).ready(function ($) {

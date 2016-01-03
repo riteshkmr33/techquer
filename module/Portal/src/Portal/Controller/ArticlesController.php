@@ -4,18 +4,25 @@ namespace Portal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Portal\Form\AdminForm;
-use Portal\Model\Admins;
+use Portal\Form\ArticleForm;
+use Portal\Model\Articles;
+use Zend\Validator\File\Size;
+use Zend\Validator\File\ImageSize;
+use Zend\Validator\File\IsImage;
+use Zend\Session\Container;
+use Zend\Http\Request;
 
-class AeticlesController extends AbstractActionController {
+class ArticlesController extends AbstractActionController {
 
     public $form;
     public $adminsTable;
+    public $articlesTable;
+    public $folderPath = '/Users/riteshkumar/Sites/techquer/public';
     public $errors = array();
 
-    private function getForm() {
+    private function getForm($selectedTags) {
         if (!$this->form) {
-            $this->form = new AdminForm();
+            $this->form = new ArticleForm($this->getServiceLocator()->get('Portal\Model\CategoriesTable'), $this->getServiceLocator()->get('Portal\Model\TagsTable'), $selectedTags);
         }
 
         return $this->form;
@@ -29,14 +36,22 @@ class AeticlesController extends AbstractActionController {
         return $this->adminsTable;
     }
 
+    private function getArticlesTable() {
+        if (!$this->articlesTable) {
+            $this->articlesTable = $this->getServiceLocator()->get('Portal\Model\ArticlesTable');
+        }
+
+        return $this->articlesTable;
+    }
+
     public function indexAction() {
         $search = $this->request->getQuery('search');
-        $paginator = $this->getAdminsTable()->fetchAll(true, array('search'=>$search));
+        $paginator = $this->getArticlesTable()->fetchAll(true, array('search' => $search));
         //echo '<pre>'; print_r($paginator->getTotalItemCount()); exit;
         $paginator->setCurrentPageNumber((int) $this->Params()->fromQuery('page', 1));
         $paginator->setItemCountPerPage(10);
 
-        return new ViewModel(array('admins' => $paginator,
+        return new ViewModel(array('articles' => $paginator,
             'successMsgs' => $this->flashMessenger()->getCurrentSuccessMessages(),
             'errors' => $this->flashMessenger()->getCurrentErrorMessages()
         ));
@@ -45,108 +60,145 @@ class AeticlesController extends AbstractActionController {
     public function addAction() {
 
 
-        $form = $this->getForm();
+        $form = $this->getForm(array());
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $users = new Admins;
+            $filePath = '';
+            $articles = new Articles;
             // Adding already exist validation on runtime
-            $users->getInputFilter()->get('userName')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'admins', 'field' => 'userName', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'))));
-            
-            $form->setInputFilter($users->getInputFilter());
+            $articles->getInputFilter()->get('title')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'articles', 'field' => 'title', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'))));
+
+            $form->setInputFilter($articles->getInputFilter());
+            $tags = $request->getPost('tags');
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $users->exchangeArray($form->getData());
+                
+                /* image upload code starts here */
+                $file = $request->getFiles();
+                $fileAdapter = new \Zend\File\Transfer\Adapter\Http();
+                $imageValidator = new IsImage();
+                if ($imageValidator->isValid($file['file_url']['tmp_name'])) {
+                    $fileParts = explode('.', $file['file_url']['name']);
+                    $filter = new \Zend\Filter\File\Rename(array(
+                        "target" => $this->folderPath."/images/articles/article." . $fileParts[1],
+                        "randomize" => true,
+                    ));
+
+                    try {
+                        $filePath = str_replace($this->folderPath, '',$filter->filter($file['file_url'])['tmp_name']);
+                    } catch (\Exception $e) {
+                        return new ViewModel(array('form' => $form, 'file_errors' => array($e->getMessage())));
+                    }
+                } else {
+                    return new ViewModel(array('form' => $form, 'file_errors' => $imageValidator->getMessages()));
+                }
+                /* image upload code ends here */
+                
+                $articles->exchangeArray($form->getData());
                 $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-                $this->getAdminsTable()->saveAdmins($users, $loggedInUser->adminId, $loggedInUser->adminId);
-                $this->flashMessenger()->addSuccessMessage('User added successfully..!!');
+                $this->getArticlesTable()->saveArticles($articles, $tags, $filePath, $loggedInUser->adminId, $loggedInUser->adminId);
+                $this->flashMessenger()->addSuccessMessage('Article added successfully..!!');
 
                 // Redirect to list of pages
-                return $this->redirect()->toRoute('portal/admins');
-            }
-        }
-
-        return new ViewModel(array('form' => $form, 'salt' => $this->generateSalt()));
-    }
-
-    public function editAction() {
-
-        $id = (int) $this->params()->fromRoute('id', 0);
-        if (!$id) {
-            return $this->redirect()->toRoute('portal/admins');
-        }
-
-        if (!$users = $this->getAdminsTable()->getAdmin($id)) {
-            $this->flashMessenger()->addErrorMessage('No user found..!!');
-            return $this->redirect()->toRoute('portal/admins');
-        }
-
-        $form = $this->getForm();
-        $form->bind($users);
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-
-            // Adding already exist validation on runtime excluding the current record
-            $users->getInputFilter()->get('userName')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'admins', 'field' => 'userName', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'), 'exclude' => array('field' => 'adminId', 'value' => $id))));
-            $users->getInputFilter()->get('password')->setRequired(false);
-
-            $form->setInputFilter($users->getInputFilter());
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-
-                $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
-                $this->getAdminsTable()->saveAdmins($form->getData(), '', $loggedInUser->adminId);
-                $this->flashMessenger()->addSuccessMessage('User updated successfully..!!');
-
-                // Redirect to listing pages
-                return $this->redirect()->toRoute('portal/admins');
+                return $this->redirect()->toRoute('portal/articles');
             }
         }
 
         return new ViewModel(array('form' => $form));
     }
 
+    public function editAction() {
+
+        $id = (int) $this->params()->fromRoute('id', 0);
+        if (!$id) {
+            return $this->redirect()->toRoute('portal/articles');
+        }
+
+        if (!$articles = $this->getArticlesTable()->getArticle($id)) {
+            $this->flashMessenger()->addErrorMessage('No article found..!!');
+            return $this->redirect()->toRoute('portal/articles');
+        }
+
+        $form = $this->getForm(array_keys($this->getArticlesTable()->getArticleTags($id)));
+        $form->bind($articles);
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $filePath = $request->getPost('oldFile');
+            // Adding already exist validation on runtime excluding the current record
+            $articles->getInputFilter()->get('title')->getValidatorChain()->attach(new \Zend\Validator\Db\NoRecordExists(array('table' => 'articles', 'field' => 'title', 'adapter' => $this->getServiceLocator()->get('Zend\Db\Adapter\Adapter'), 'exclude' => array('field' => 'articleId', 'value' => $id))));
+
+            $form->setInputFilter($articles->getInputFilter());
+            $tags = $request->getPost('tags');
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                
+                /* image upload code starts here */
+                $file = $request->getFiles();
+                $fileAdapter = new \Zend\File\Transfer\Adapter\Http();
+                $imageValidator = new IsImage();
+                if ($imageValidator->isValid($file['file_url']['tmp_name'])) {
+                    $fileParts = explode('.', $file['file_url']['name']);
+                    $filter = new \Zend\Filter\File\Rename(array(
+                        "target" => $this->folderPath."/images/articles/article." . $fileParts[1],
+                        "randomize" => true,
+                    ));
+
+                    try {
+                        @unlink($this->folderPath.$filePath);
+                        $filePath = str_replace($this->folderPath, '',$filter->filter($file['file_url'])['tmp_name']);
+                    } catch (\Exception $e) {
+                        return new ViewModel(array('form' => $form, 'file_errors' => array($e->getMessage())));
+                    }
+                } else {
+                    return new ViewModel(array('form' => $form, 'file_errors' => $imageValidator->getMessages()));
+                }
+                /* image upload code ends here */
+                
+                $loggedInUser = $this->getAdminsTable()->getAdmin($this->getServiceLocator()->get('AuthService')->getIdentity());
+                $this->getArticlesTable()->saveArticles($form->getData(), $tags, $filePath, '', $loggedInUser->adminId);
+                $this->flashMessenger()->addSuccessMessage('Article updated successfully..!!');
+
+                // Redirect to listing pages
+                return $this->redirect()->toRoute('portal/articles');
+            }
+        }
+
+        return new ViewModel(array('form' => $form, 'article' => $articles));
+    }
+
     public function deleteAction() {
-        $ids = array_filter(explode(',',$this->request->getQuery('ids',0)));
-        $id = (count($ids) == 0)?(int) $this->params()->fromRoute('id', 0):$ids;
-        
+        $ids = array_filter(explode(',', $this->request->getQuery('ids', 0)));
+        $id = (count($ids) == 0) ? (int) $this->params()->fromRoute('id', 0) : $ids;
+
         if (!$id) {
             $this->flashMessenger()->addErrorMessage('Invalid Ids..!!');
-            return $this->redirect()->toRoute('portal/admins');
+            return $this->redirect()->toRoute('portal/articles');
         }
-        
-        $this->getAdminsTable()->changeStatus($id, 4);
-        $this->flashMessenger()->addSuccessMessage('User deleted successfully..!!');
+
+        $this->getArticlesTable()->changeStatus($id, 4);
+        $this->flashMessenger()->addSuccessMessage('Article deleted successfully..!!');
 
         // Redirect to listing page
-        return $this->redirect()->toRoute('portal/admins');
+        return $this->redirect()->toRoute('portal/articles');
     }
-    
+
     public function statusAction() {
-        $ids = array_filter(explode(',',$this->request->getQuery('ids',0)));
-        
+        $ids = array_filter(explode(',', $this->request->getQuery('ids', 0)));
+
         if (count($ids) == 0) {
             $this->flashMessenger()->addErrorMessage('Invalid Ids..!!');
-            return $this->redirect()->toRoute('portal/admins');
+            return $this->redirect()->toRoute('portal/articles');
         }
-        
-        $this->getAdminsTable()->changeStatus($ids, $this->request->getQuery('status',1));
+
+        $this->getArticlesTable()->changeStatus($ids, $this->request->getQuery('status', 1));
         $this->flashMessenger()->addSuccessMessage('Status updated successfully..!!');
 
         // Redirect to listing page
-        return $this->redirect()->toRoute('portal/admins');
-    }
-
-    private function generateSalt($length = 32) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
-            $randomString .= $characters[rand(0, strlen($characters) - 1)];
-        }
-        return $randomString;
+        return $this->redirect()->toRoute('portal/articles');
     }
 
 }

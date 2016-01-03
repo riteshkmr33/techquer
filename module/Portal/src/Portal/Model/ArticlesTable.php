@@ -10,33 +10,37 @@ use Zend\Db\TableGateway\TableGateway;
 use Zend\Paginator\Paginator;
 use Zend\Paginator\Adapter\DbSelect;
 
-use Portal\Model\Admins;
+use Portal\Model\Articles;
 
-class AdminsTable {
-
+class ArticlesTable {
+    
+    private $articleTags;
     protected $tableGateway;
 
     public function __construct(TableGateway $tableGateway) {
         $this->tableGateway = $tableGateway;
         $adapter = $this->tableGateway->getAdapter();
+        
+        $this->articleTags = new TableGateway('articles_tags', $adapter);
     }
     
     public function fetchAll($paginate=true, $filter = array()) {
         if ($paginate == true) {
-            $select = new Select('admins');
-            $select->columns(array('*',new Expression('creators.displayName AS creator')));
-            $select->join(array('creators'=>'admins'), 'admins.createdBy = creators.adminId',array(),'inner');
-            $select->join('lookup_status', 'admins.status = lookup_status.statusId',array('label'),'inner');
+            $select = new Select('articles');
+            $select->columns(array('*',new Expression('admins.displayName AS creator')));
+            $select->join('categories', 'articles.catId = categories.catId',array('category'),'inner');
+            $select->join('admins', 'articles.createdBy = admins.adminId',array(),'inner');
+            $select->join('lookup_status', 'articles.status = lookup_status.statusId',array('label'),'inner');
             
             /* Data filter code start here */
             if (count($filter) > 0) {
-                (isset($filter['search']) && !empty($filter['search']))?$select->where("admins.userName like '%".$filter['search']."%' OR admins.email like '%".$filter['search']."%' OR admins.displayName like '%".$filter['search']."%' "):'';
+                (isset($filter['search']) && !empty($filter['search']))?$select->where("articles.title like '%".$filter['search']."%' OR articles.summary like '%".$filter['search']."%' OR categories.category  like '%".$filter['search']."%'"):'';
             }
             //echo str_replace('"','',$select->getSqlString()); //exit;
             /* Data filter code end here */
 
             $resultSetPrototype = new ResultSet();
-            $resultSetPrototype->setArrayObjectPrototype(new Admins());
+            $resultSetPrototype->setArrayObjectPrototype(new Articles());
 
             $paginatorAdapter = new DbSelect($select, $this->tableGateway->getAdapter(), $resultSetPrototype);
             $paginator = new Paginator($paginatorAdapter);
@@ -47,13 +51,9 @@ class AdminsTable {
         return $this->tableGateway->select();
     }
     
-    public function getAdmin($userNameorId) {
+    public function getArticle($id) {
         
-        if (is_numeric($userNameorId)) {
-            $rowset = $this->tableGateway->select(array('adminId' => $userNameorId));
-        } else {
-            $rowset = $this->tableGateway->select(array('userName' => $userNameorId));
-        }
+        $rowset = $this->tableGateway->select(array('articleId' => $id));
         
         $row = $rowset->current();
         
@@ -63,63 +63,76 @@ class AdminsTable {
         }
         return $row;
     }
-
-    public function getPermissionsByUsername($username) {
-        $permissions = array();
-        if ($username != '') {
-            
-            $select = $this->tableGateway->getSql()->select();
-            $select->join('roleModules','users.roleId = roleModules.roleId',array('moduleId', 'create', 'read', 'update', 'delete'),'left');
-            $select->join('modules','modules.moduleId = roleModules.moduleId',array('name'),'left');
-            $select->where("username = '$username'");
-            //echo str_replace('"','',$select->getSqlString()); exit;
-            
-            $raw = $this->tableGateway->selectwith($select);
-            
-            foreach ($raw as $value) {
-                $permissions[$value->moduleId] = array('create' => $value->create, 'read' => $value->read, 'update' => $value->update, 'delete' => $value->delete, 'name' => $value->name);
-            }
+    
+    public function getArticleTags($id) {
+        $tags = array();
+        $select = $this->articleTags->getSql()->select();
+        $select->join('tags','articles_tags.tagId = tags.tagId',array('tag'),'inner');
+        $select->where(array('articleId' => $id));
+        $resultSet = $this->articleTags->selectwith($select);
+        
+        foreach ($resultSet as $data) {
+            $tags[$data->tagId] = $data->tag;
         }
-        return $permissions;
+        
+        return $tags;
     }
     
-    public function saveAdmins(Admins $admin, $createdBy = '', $updatedBy = '' )
+    public function addTags($articleId, $tags) {
+        $this->articleTags->delete(array('articleId' => $articleId));
+        
+        foreach ($tags as $tag) {
+            $this->articleTags->insert(array('articleId' => $articleId, 'tagId' => $tag));
+        }
+    }
+    public function addImages($articleId, $images) {
+        $this->articleTags->delete(array('articleId' => $articleId));
+        
+        foreach ($images as $image) {
+            $this->articleTags->insert(array('articleId' => $articleId, 'tagId' => $tag));
+        }
+    }
+
+    public function saveArticles(Articles $article, $tags, $filePath, $createdBy = '', $updatedBy = '' )
     {
         $data = array(
-            'userName' => $admin->userName,
-            'displayName' => $admin->displayName,
-            'email' => $admin->email,
-            'salt' => $admin->salt,
-            'roleId' => $admin->roleId,
-            'status' => $admin->status,
+            'catId' => $article->catId,
+            'title' => $article->title,
+            'summary' => $article->title,
+            'metaTitle' => $article->metaTitle,
+            'metaDescription' => $article->metaDescription,
+            'metaKeywords' => $article->metaKeywords,
+            'filePath' => $filePath,
+            'status' => $article->status,
         );
         
         ($createdBy != '')?$data['createdBy'] = $createdBy:'';
         ($updatedBy != '')?$data['updatedBy'] = $updatedBy:'';
         
-        $id = (int) $admin->adminId;
+        $id = (int) $article->articleId;
         if ($id == 0) {
-            $data['password'] = SHA1($admin->password.$admin->salt);
             $this->tableGateway->insert($data);
+            $id = $this->tableGateway->lastInsertValue;
         } else {
-            ($admin->password != '')?$data['password'] = SHA1($admin->password.$admin->salt):'';
             $data['updatedDate'] = date('Y-m-d h:i:s');
-            if ($this->getAdmin($id)) {
-                $this->tableGateway->update($data, array('adminId' => $id));
+            if ($this->getArticle($id)) {
+                $this->tableGateway->update($data, array('articleId' => $id));
             } else {
-                throw new \Exception('Admin does not exist');
+                throw new \Exception('Article does not exist');
             }
         }
+        
+        $this->addTags($id, $tags);  // updating article tags
     }
     
-    public function deleteAdmin($id)
+    public function deleteCategory($id)
     {
-        $this->tableGateway->delete(array('adminId' => $id, 'deletePermission' => 1));
+        $this->tableGateway->delete(array('articleId' => $id));
     }
     
     public function changeStatus($ids, $status)
     {
-        $this->tableGateway->update(array('status' => $status), array('adminId' => $ids));
+        $this->tableGateway->update(array('status' => $status), array('articleId' => $ids));
     }
 
 }

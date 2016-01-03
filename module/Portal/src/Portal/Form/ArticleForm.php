@@ -4,87 +4,94 @@ namespace Portal\Form;
 
 use Zend\Captcha;
 use Zend\Form\Form;
+use Portal\Model\CategoriesTable;
+use Portal\Model\TagsTable;
 
 class ArticleForm extends Form {
 
-    public function __construct() {
+    private $cats;
+    private $tags;
+    private $selectedTags;
+
+    public function __construct(CategoriesTable $cats, TagsTable $tags, $selectedTags) {
         parent::__construct();
-        $this->setAttributes(array('method' => 'post', 'id' => 'loginForm', 'class' => 'form-horizontal', 'action' => ''));
-        
+        $this->cats = $cats;
+        $this->tags = $tags;
+        $this->selectedTags = $selectedTags;
+        $this->setAttributes(array('method' => 'post', 'id' => 'articleForm', 'class' => 'form-horizontal', 'action' => '', 'enctype' => 'multipart/form-data'));
+
         $this->add(array(
-            'name' => 'adminId',
+            'name' => 'articleId',
             'type' => 'Hidden',
         ));
-        
-        $this->add(array(
-            'type' => 'text',
-            'name' => 'displayName',
-            'options' => array(
-                'label' => 'Name',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'displayName',
-            ),
-        ));
 
         $this->add(array(
             'type' => 'text',
-            'name' => 'userName',
+            'name' => 'title',
             'options' => array(
-                'label' => 'Username',
+                'label' => 'Title',
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'id' => 'userName',
-            ),
-        ));
-
-        $this->add(array(
-            'type' => 'password',
-            'name' => 'password',
-            'autocomplete' => 'off',
-            'options' => array(
-                'label' => 'Password',
-            ),
-            'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'password',
+                'id' => 'title',
             ),
         ));
 
         $this->add(array(
             'type' => 'text',
-            'name' => 'salt',
-            'autocomplete' => 'off',
+            'name' => 'metaTitle',
             'options' => array(
-                'label' => 'Salt',
+                'label' => 'Meta Title',
             ),
             'attributes' => array(
                 'class' => 'form-control',
-                'id' => 'salt',
+                'id' => 'metaTitle',
             ),
         ));
 
         $this->add(array(
-            'type' => 'text',
-            'name' => 'email',
+            'name' => 'summary',
+            'type' => 'Zend\Form\Element\Textarea',
             'options' => array(
-                'label' => 'E-mail',
+                'label' => 'Content',
             ),
             'attributes' => array(
-                'class' => 'form-control',
-                'id' => 'email',
+                'class' => 'form-control editor',
+                'id' => 'summary',
             ),
         ));
 
         $this->add(array(
-            'name' => 'status',
+            'name' => 'metaDescription',
+            'type' => 'Zend\Form\Element\Textarea',
+            'options' => array(
+                'label' => 'Meta Description',
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
+                'id' => 'metaDescription',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'metaKeywords',
+            'type' => 'Zend\Form\Element\Textarea',
+            'options' => array(
+                'label' => 'Meta Keywords',
+            ),
+            'attributes' => array(
+                'class' => 'form-control',
+                'id' => 'metaKeywords',
+            ),
+        ));
+
+        $this->add(array(
+            'name' => 'catId',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Status',
-                'value_options' => array( '1' => 'Active', '3' => 'Suspended', '4' => 'Deleted'),
-                'empty_option' => '--- Select Status ---'
+                'label' => 'Category',
+                'value_options' => $this->getCats(),
+                'empty_option' => '--- Select Category ---'
             ),
             'attributes' => array(
                 'class' => 'form-control',
@@ -92,15 +99,41 @@ class ArticleForm extends Form {
         ));
 
         $this->add(array(
-            'name' => 'roleId',
+            'name' => 'tags',
             'type' => 'Zend\Form\Element\Select',
             'options' => array(
-                'label' => 'Role',
-                'value_options' => $this->getRoles(),
-                'empty_option' => '--- Select Role ---'
+                'label' => 'Tags',
+                'value_options' => $this->getTags(),
+            ),
+            'attributes' => array(
+                'class' => ' select2',
+                'multiple' => 'multiple',
+                'value' => $this->selectedTags
+            )
+        ));
+
+        $this->add(array(
+            'name' => 'status',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array(
+                'label' => 'Status',
+                'value_options' => array('1' => 'Active', '2' => 'Inactive', '4' => 'Deleted'),
+                'empty_option' => '--- Select Status ---'
             ),
             'attributes' => array(
                 'class' => 'form-control',
+                'value' => 1
+            )
+        ));
+
+        $this->add(array(
+            'name' => 'file_url',
+            'attributes' => array(
+                'type' => 'file',
+                'class' => 'filestyle'
+            ),
+            'options' => array(
+                'label' => 'Image',
             )
         ));
 
@@ -113,13 +146,24 @@ class ArticleForm extends Form {
         ));
     }
 
-    function getRoles() {
-        $selectData = array('1' => 'Admin','2' => 'Sub-Admin');
-        /* $results = $this->roles->fetchAll(false);
+    function getCats() {
+        $selectData = array();
+        $results = $this->cats->fetchAll(false);
 
-          foreach ($results as $result) {
-          $selectData[$result->roleId] = ucwords($result->name);
-          } */
+        foreach ($results as $result) {
+            $selectData[$result->catId] = $result->category;
+        }
+
+        return $selectData;
+    }
+
+    function getTags() {
+        $selectData = array();
+        $results = $this->tags->fetchAll(false);
+
+        foreach ($results as $result) {
+            $selectData[$result->tagId] = $result->tag;
+        }
 
         return $selectData;
     }

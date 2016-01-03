@@ -49,10 +49,13 @@
                     <div class="bootstrap-table">
                         <div class="fixed-table-toolbar">
                             <div class="bars pull-left">
+                                <?php if (in_array(4,$this->layout()->permissions[5])):?>
                                 <button id="demo-delete-row" class="btn btn-danger delete" disabled="" data-href="<?php echo $this->url('portal/roles',array('action'=>'delete'))?>">
                                     <i class="fa fa-trash-o m-r-5"></i>
                                     Delete
                                 </button>
+                                <?php endif;?>
+                                <?php if (in_array(3,$this->layout()->permissions[5])):?>
                                 <button id="demo-delete-row" class="btn btn-warning status" disabled="" data-val="2" data-href="<?php echo $this->url('portal/roles',array('action'=>'status'))?>">
                                     <i class="fa fa-times m-r-5"></i>
                                     Inactive
@@ -61,10 +64,13 @@
                                     <i class="fa fa-check m-r-5"></i>
                                     Active
                                 </button>
+                                <?php endif;?>
+                                <?php if (in_array(2,$this->layout()->permissions[5])):?>
                                 <a id="demo-btn-addrow" class="btn btn-default" href="<?php echo $this->url('portal/roles', array('action' => 'add')); ?>">
                                     <i class="fa fa-plus m-r-5"></i>
                                     Add New Role
                                 </a>
+                                <?php endif;?>
                             </div>
                             <!--<div class="columns columns-right btn-group pull-right">
                                 <button class="btn btn-default" title="Refresh" name="refresh" type="button">
@@ -105,12 +111,16 @@
                                                     <td><?php echo isset($role->creator) ? $role->creator : ''; ?></td>
                                                     <td><?php echo isset($role->label) ? $role->label : ''; ?></td>
                                                     <td class="actions">
+                                                        <?php if (in_array(3,$this->layout()->permissions[5])):?>
                                                         <button class="on-default edit-row" onclick="document.location.href = '<?php echo $this->url('portal/roles',array('action'=>'edit','id'=>$role->roleId))?>'">
                                                             <i class="fa fa-pencil"></i>
                                                         </button>
+                                                        <?php endif;?>
+                                                        <?php if (in_array(4,$this->layout()->permissions[5])):?>
                                                         <button class="delete" data-href="<?php echo $this->url('portal/roles',array('action'=>'delete','id'=>$role->roleId))?>">
                                                             <i class="fa fa-trash-o"></i>
                                                         </button>
+                                                        <?php endif;?>
                                                     </td>
                                                 </tr>
                                             <?php endforeach; ?>
